@@ -1,0 +1,85 @@
+[package]
+name = "rust_admin"
+version = "0.1.0"
+edition = "2021"
+description = "RustAdmin — bootstrap admin panel (Rust + Rocket), port of NodeAdmin"
+default-run = "rust_admin"
+
+# Library crate holds all the logic so integration tests (tests/) and the tool
+# binaries (src/bin/*) can import it. The web/api server is a thin binary.
+[lib]
+name = "rust_admin"
+path = "src/lib.rs"
+
+# Main web/api binary
+[[bin]]
+name = "rust_admin"
+path = "src/main.rs"
+
+[dependencies]
+# Web framework + templating
+rocket = { version = "0.5.1", features = ["json", "secrets"] }
+rocket_dyn_templates = { version = "0.2.0", features = ["tera"] }
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Config / env
+figment = { version = "0.10", features = ["env", "toml"] }
+dotenvy = "0.15"
+
+# Async runtime helpers (Rocket re-exports tokio, but we use it directly in places)
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "sync", "time"] }
+
+# ORM (multi-DB, runtime dialect via env) + query builder
+sea-orm = { version = "1.1", features = [
+    "sqlx-sqlite",
+    "sqlx-mysql",
+    "sqlx-postgres",
+    "runtime-tokio-rustls",
+    "macros",
+    "with-chrono",
+    "with-uuid",
+] }
+sea-orm-migration = { version = "1.1", features = [
+    "runtime-tokio-rustls",
+    "sqlx-sqlite",
+    "sqlx-mysql",
+    "sqlx-postgres",
+] }
+async-trait = "0.1"
+
+# Auth: JWT (HS256 pinned)
+jsonwebtoken = "9"
+
+# Password hashing + OTP randomness + ids + time
+bcrypt = "0.15"
+rand = "0.8"
+uuid = { version = "1", features = ["v4"] }
+chrono = { version = "0.4", features = ["serde"] }
+chrono-tz = "0.9"
+
+# Timing-safe byte comparison (CSRF token validation)
+subtle = "2"
+
+# HTML sanitization for rich-text (bluemonday/sanitize-html equivalent)
+ammonia = "4"
+
+# Magic-byte detection for safe uploads (don't trust client MIME)
+infer = "0.16"
+
+# HTTP client for the live frontend-template catalog (opentailwind) + on-demand download
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json"] }
+
+# Logging
+tracing = "0.1"
+
+[dev-dependencies]
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+sea-orm = { version = "1.1", features = ["macros", "with-chrono", "with-uuid"] }
+uuid = { version = "1", features = ["v4"] }
+chrono = { version = "0.4", features = ["serde"] }
+rocket = { version = "0.5.1", features = ["json", "secrets"] }
+rocket_dyn_templates = { version = "0.2.0", features = ["tera"] }
+serde_json = "1"

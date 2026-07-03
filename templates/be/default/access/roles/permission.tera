@@ -1,0 +1,103 @@
+{% extends "layouts/be/default/main" %}
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold text-gray-800">Permission Management</h1>
+</div>
+
+<div class="tw-card p-0 overflow-hidden">
+  <div class="px-6 py-4 border-b flex items-center justify-between">
+    <h2 class="text-lg font-bold" style="color:var(--primary)">Permission List</h2>
+    <div class="btn-group btn-sm">
+      <button type="submit" form="selection" formmethod="post" formaction="{{ route(name='admin.v1.access.role.permission.assign_selected', id=role.id) | safe }}?_csrf={{ csrf_token }}" data-confirm="Confirm Assign" class="btn btn-info btn-sm"><i class="fas fa-fw fa-check"></i> Assign Selected</button>
+      <button type="submit" form="selection" formmethod="post" formaction="{{ route(name='admin.v1.access.role.permission.unassign_selected', id=role.id) | safe }}?_csrf={{ csrf_token }}" data-confirm="Confirm Unassign" class="btn btn-danger btn-sm"><i class="fas fa-fw fa-times"></i> Unassign Selected</button>
+    </div>
+  </div>
+
+  <div class="p-4" style="overflow-x:auto">
+    <table class="table table-bordered table-hover align-middle">
+      <thead>
+        <form id="searchform" method="get" action="{{ route(name='admin.v1.access.role.permission', id=role.id) | safe }}">
+          <tr>
+            <th width="2%"></th>
+            <th width="7%">
+              {% set cur_ps = filter.q_page_size | int(default=0) %}
+              <select name="q_page_size" class="form-control">
+                {% for s in [10, 20, 50, 100] %}
+                <option value="{{ s }}" {% if cur_ps == s %}selected{% endif %}>{{ s }}</option>
+                {% endfor %}
+              </select>
+            </th>
+            <th width="35%"><input type="text" class="form-control" name="q_name" value="{{ filter.q_name | default(value='') }}"></th>
+            <th width="12%">
+              <select name="q_status" class="form-control">
+                <option value="" disabled selected>Select</option>
+                <option value="Active" {% if filter.q_status == 'Active' %}selected{% endif %}>Active</option>
+                <option value="Inactive" {% if filter.q_status == 'Inactive' %}selected{% endif %}>Inactive</option>
+              </select>
+            </th>
+            <th width="30%"><input type="text" class="form-control" name="q_desc" value="{{ filter.q_desc | default(value='') }}"></th>
+            <th width="5%" class="text-center align-middle">
+              <div class="btn-group">
+                <button type="submit" class="btn btn-sm btn-success"><i class="fas fa-fw fa-search"></i></button>
+                <a href="{{ route(name='admin.v1.access.role.permission', id=role.id) | safe }}" class="btn btn-sm btn-danger"><i class="fas fa-fw fa-times"></i></a>
+              </div>
+            </th>
+          </tr>
+        </form>
+        <tr>
+          <th width="5%"><input type="checkbox" id="checkall"/></th>
+          <th width="5%">No</th>
+          <th width="35%">Name</th>
+          <th width="12%">Status</th>
+          <th width="30%">Description</th>
+          <th width="5%">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <form id="selection">
+          {% for data in datas %}
+          <tr>
+            <td><input name="selected[]" value="{{ data.id }}" type="checkbox"/></td>
+            <td>{{ loop.index + (meta.page_size * (meta.page - 1)) }}</td>
+            <td>{{ data.name }}</td>
+            <td class="text-left">
+              {% if data.assigned %}
+                <i class="fas fa-check-circle text-green-500 text-xl" title="Assigned"></i>
+              {% else %}
+                <i class="fas fa-times-circle text-gray-300 text-xl" title="Not assigned"></i>
+              {% endif %}
+            </td>
+            <td>{{ data.desc | default(value='') }}</td>
+            <td class="text-center">
+              <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle-dd aria-expanded="false">Action</button>
+                <div class="dropdown-menu dropdown-menu-end">
+                  <a href="{{ route(name='admin.v1.access.role.permission.assign', id=role.id, permission_id=data.id) | safe }}" class="dropdown-item"><i class="fas fa-check fa-fw"></i> Assign</a>
+                  <div class="dropdown-divider"></div>
+                  <a href="{{ route(name='admin.v1.access.role.permission.unassign', id=role.id, permission_id=data.id) | safe }}" class="dropdown-item danger"><i class="fas fa-times fa-fw"></i> Unassign</a>
+                </div>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </form>
+      </tbody>
+    </table>
+
+    <div class="d-flex justify-content-end mt-4">
+      <nav>
+        <ul class="pagination">
+          {% if meta.has_prev %}<li class="page-item"><a class="page-link" href="?q_page={{ meta.page - 1 }}{{ base_query | safe }}">Previous</a></li>{% endif %}
+          {% for p in pages %}
+            {% if p %}<li class="page-item {% if p == meta.page %}active{% endif %}"><a class="page-link" href="?q_page={{ p }}{{ base_query | safe }}">{{ p }}</a></li>
+            {% else %}<li class="page-item"><span class="page-link">…</span></li>{% endif %}
+          {% endfor %}
+          {% if meta.has_next %}<li class="page-item"><a class="page-link" href="?q_page={{ meta.page + 1 }}{{ base_query | safe }}">Next</a></li>{% endif %}
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<script>$("#checkall").click(function(){ $('input:checkbox').not(this).prop('checked', this.checked); });</script>
+{% endblock content %}

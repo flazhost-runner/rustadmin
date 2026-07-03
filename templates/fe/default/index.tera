@@ -1,0 +1,73 @@
+{% extends "layouts/fe/default/main" %}
+{% block content %}
+<!-- Hero -->
+<section class="relative px-6 py-28 text-center bg-gradient-to-b from-indigo-50 via-white to-white overflow-hidden">
+  <div class="max-w-3xl mx-auto" data-reveal>
+    <p class="uppercase tracking-[0.3em] text-indigo-500 text-xs font-semibold">{% if setting.initial %}{{ setting.initial }}{% else %}Welcome{% endif %}</p>
+    <h1 class="text-4xl md:text-6xl font-extrabold mt-4 leading-tight">{% if setting.name %}{{ setting.name }}{% else %}RustAdmin{% endif %}</h1>
+    <div class="text-slate-500 mt-6 text-lg">
+      {% if setting.description %}{{ setting.description | safe }}{% else %}<p>A fast, secure admin starter — built with Rust &amp; Rocket.</p>{% endif %}
+    </div>
+    <div class="mt-8 flex gap-3 justify-center">
+      <a href="/auth/login" class="px-7 py-3 rounded-lg bg-indigo-600 text-white font-medium">Get Started</a>
+      <a href="#services" class="px-7 py-3 rounded-lg border border-slate-300 font-medium">Learn more</a>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<section class="px-6 py-14 bg-white">
+  <div class="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+    <div data-reveal><p class="text-4xl font-extrabold text-indigo-600">99.9%</p><p class="text-slate-500 text-sm mt-1">Uptime</p></div>
+    <div data-reveal><p class="text-4xl font-extrabold text-indigo-600">12k+</p><p class="text-slate-500 text-sm mt-1">Users</p></div>
+    <div data-reveal><p class="text-4xl font-extrabold text-indigo-600">40ms</p><p class="text-slate-500 text-sm mt-1">Latency</p></div>
+    <div data-reveal><p class="text-4xl font-extrabold text-indigo-600">24/7</p><p class="text-slate-500 text-sm mt-1">Support</p></div>
+  </div>
+</section>
+
+<!-- Services -->
+<section id="services" class="px-6 py-20 bg-slate-50">
+  <div class="max-w-6xl mx-auto">
+    <h2 class="text-3xl font-extrabold text-center mb-12" data-reveal>Our Services</h2>
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="p-8 rounded-2xl bg-white shadow-sm" data-reveal><i class="fas fa-shield-halved text-2xl text-indigo-600"></i><h3 class="font-bold text-lg mt-4">Security</h3><p class="text-slate-500 mt-2 text-sm">RBAC, CSRF, JWT, rate-limiting out of the box.</p></div>
+      <div class="p-8 rounded-2xl bg-white shadow-sm" data-reveal><i class="fas fa-bolt text-2xl text-indigo-600"></i><h3 class="font-bold text-lg mt-4">Performance</h3><p class="text-slate-500 mt-2 text-sm">Async Rocket + SeaORM with pooling and caching.</p></div>
+      <div class="p-8 rounded-2xl bg-white shadow-sm" data-reveal><i class="fas fa-palette text-2xl text-indigo-600"></i><h3 class="font-bold text-lg mt-4">Theming</h3><p class="text-slate-500 mt-2 text-sm">9 palettes, switchable without a rebuild.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section id="features" class="px-6 py-20">
+  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+    <div data-reveal>
+      <h2 class="text-3xl font-extrabold mb-4">Everything you need</h2>
+      <ul class="space-y-3 text-slate-600">
+        <li><i class="fas fa-check text-green-500 mr-2"></i>Multi-database (SQLite / MySQL / Postgres)</li>
+        <li><i class="fas fa-check text-green-500 mr-2"></i>Route-driven permissions</li>
+        <li><i class="fas fa-check text-green-500 mr-2"></i>Rich-text + file manager</li>
+        <li><i class="fas fa-check text-green-500 mr-2"></i>Frontend template switcher</li>
+      </ul>
+    </div>
+    <div class="grid grid-cols-2 gap-4" data-reveal>
+      <div class="h-32 rounded-2xl bg-indigo-100"></div>
+      <div class="h-32 rounded-2xl bg-indigo-200 mt-6"></div>
+      <div class="h-32 rounded-2xl bg-indigo-200"></div>
+      <div class="h-32 rounded-2xl bg-indigo-100 mt-6"></div>
+    </div>
+  </div>
+</section>
+
+<!-- About / contact -->
+<section id="about" class="px-6 py-20 bg-slate-50">
+  <div class="max-w-4xl mx-auto text-center" data-reveal>
+    <h2 class="text-3xl font-extrabold mb-4">Get in touch</h2>
+    <div id="contact" class="flex flex-col md:flex-row gap-6 justify-center mt-8 text-slate-600">
+      {% if setting.email %}<span><i class="fas fa-envelope text-indigo-600 mr-2"></i>{{ setting.email }}</span>{% endif %}
+      {% if setting.phone %}<span><i class="fas fa-phone text-indigo-600 mr-2"></i>{{ setting.phone }}</span>{% endif %}
+      {% if setting.address %}<span><i class="fas fa-location-dot text-indigo-600 mr-2"></i>{{ setting.address }}</span>{% endif %}
+    </div>
+    <a href="/auth/login" class="inline-block mt-10 px-8 py-3 rounded-lg bg-indigo-600 text-white font-medium">Open the dashboard</a>
+  </div>
+</section>
+{% endblock content %}

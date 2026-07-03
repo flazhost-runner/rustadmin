@@ -1,0 +1,63 @@
+<!-- Sidebar (Tailwind, themeable) -->
+<aside id="tw-sidebar" class="sidebar-gradient text-white w-64 min-h-screen fixed top-0 left-0 z-40 transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col">
+    <!-- Brand -->
+    <a href="{{ route(name='admin.v1.dashboard.index') | safe }}" class="flex items-center gap-3 px-6 py-5 border-b border-white/10">
+        <div class="w-11 h-11 rounded-xl bg-white/15 flex items-center justify-center overflow-hidden shrink-0">
+            {% if setting.logo %}
+                <img src="{{ get_file(path=setting.logo) | safe }}" alt="logo" class="w-full h-full object-contain p-1">
+            {% else %}
+                <i class="fas fa-chart-line text-xl"></i>
+            {% endif %}
+        </div>
+        <span class="text-lg font-bold truncate">{% if setting.name %}{{ setting.name }}{% else %}Admin Panel{% endif %}</span>
+    </a>
+
+    <!-- Nav -->
+    <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-1">
+        <a href="{{ route(name='admin.v1.dashboard.index') | safe }}"
+           class="nav-link-tw flex items-center gap-3 px-4 py-3 rounded-lg font-medium{% if active == 'dashboard' %} active{% endif %}">
+            <i class="fas fa-tachometer-alt w-5 text-center"></i>
+            <span>Dashboard</span>
+        </a>
+        {% if nav.components %}
+        <a href="{{ route(name='admin.v1.components.index') | safe }}"
+           class="nav-link-tw flex items-center gap-3 px-4 py-3 rounded-lg font-medium{% if active == 'components' %} active{% endif %}">
+            <i class="fas fa-cubes w-5 text-center"></i>
+            <span>UI Components</span>
+        </a>
+        {% endif %}
+
+        {% if nav.permission or nav.role or nav.user or nav.setting %}
+        <p class="px-4 pt-5 pb-2 text-xs uppercase tracking-wider text-white/70 font-bold">Maintenance</p>
+
+        {% if nav.permission %}
+        <a href="{{ route(name='admin.v1.access.permission.index') | safe }}" class="nav-link-tw flex items-center gap-3 px-4 py-3 rounded-lg font-medium{% if active == 'permission' %} active{% endif %}">
+            <i class="fas fa-key w-5 text-center"></i><span>Permission</span>
+        </a>
+        {% endif %}
+        {% if nav.role %}
+        <a href="{{ route(name='admin.v1.access.role.index') | safe }}" class="nav-link-tw flex items-center gap-3 px-4 py-3 rounded-lg font-medium{% if active == 'role' %} active{% endif %}">
+            <i class="fas fa-user-shield w-5 text-center"></i><span>Role</span>
+        </a>
+        {% endif %}
+        {% if nav.user %}
+        <a href="{{ route(name='admin.v1.access.user.index') | safe }}" class="nav-link-tw flex items-center gap-3 px-4 py-3 rounded-lg font-medium{% if active == 'user' %} active{% endif %}">
+            <i class="fas fa-users w-5 text-center"></i><span>User</span>
+        </a>
+        {% endif %}
+        {% if nav.setting %}
+        <a href="{{ route(name='admin.v1.setting.index') | safe }}" class="nav-link-tw flex items-center gap-3 px-4 py-3 rounded-lg font-medium{% if active == 'setting' %} active{% endif %}">
+            <i class="fas fa-cog w-5 text-center"></i><span>Setting</span>
+        </a>
+        {% endif %}
+        {% endif %}
+    </nav>
+
+    <div class="px-6 py-4 text-xs text-white/40 border-t border-white/10">
+        {% if setting.copyright %}{{ setting.copyright }}{% endif %}
+    </div>
+</aside>
+
+<!-- Overlay (mobile) -->
+<div id="tw-sidebar-overlay" class="fixed inset-0 bg-black/40 z-30 hidden md:hidden"></div>
+<!-- End Sidebar -->

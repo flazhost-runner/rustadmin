@@ -1,0 +1,8 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>{{ app_name }}</title></head>
+<body>
+  <h1>{{ app_name }}</h1>
+  <p>Bootstrap in progress. The real chrome/landing is replaced in later phases.</p>
+</body>
+</html>

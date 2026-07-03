@@ -1,0 +1,29 @@
+{% include "layouts/be/default/head" %}
+<body id="page-top" class="min-h-screen">
+    {% include "layouts/be/default/sidebar" %}
+
+    <!-- Content wrapper (offset for the sidebar on desktop) -->
+    <div class="md:ml-64 min-h-screen flex flex-col">
+        <div class="px-4 md:px-6 pt-4">
+            {% include "layouts/be/default/topbar" %}
+        </div>
+
+        <main class="flex-1 px-4 md:px-6 pb-10">
+            {% block content %}{% endblock content %}
+        </main>
+    </div>
+
+    {% include "layouts/be/default/foot" %}
+
+    <!-- Flash message → Toast (global, every admin page) -->
+    {% if flash.message %}
+    <script>
+        (function () {
+            var type = '{{ flash.key }}' === 'success' ? 'success'
+                     : '{{ flash.key }}' === 'error' ? 'error' : 'info';
+            Toast({{ flash.message | json_encode | safe }}, type);
+        })();
+    </script>
+    {% endif %}
+</body>
+</html>

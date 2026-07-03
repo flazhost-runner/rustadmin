@@ -1,0 +1,106 @@
+{% extends "layouts/be/default/main" %}
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold text-gray-800">User Management</h1>
+</div>
+
+<div class="tw-card p-6">
+  <h2 class="text-lg font-bold mb-4" style="color:var(--primary)">User Form</h2>
+  <form method="POST" action="{{ route(name='admin.v1.access.user.update', id=data.id) | safe }}?_method=PUT&_csrf={{ csrf_token }}" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label for="code" class="form-label fw-semibold">Code</label>
+      <input id="code" type="text" class="form-control {% if errors.code %}is-invalid{% endif %}" name="code" value="{{ old.code | default(value=data.code) }}">
+      {% if errors.code %}<div class="invalid-feedback">{{ errors.code }}</div>{% endif %}
+    </div>
+    <div class="mb-3">
+      <label for="name" class="form-label fw-semibold">Name</label>
+      <input id="name" type="text" class="form-control {% if errors.name %}is-invalid{% endif %}" name="name" value="{{ old.name | default(value=data.name) }}">
+      {% if errors.name %}<div class="invalid-feedback">{{ errors.name }}</div>{% endif %}
+    </div>
+    <div class="mb-3">
+      <label for="phone" class="form-label fw-semibold">Phone Number</label>
+      <input id="phone" type="text" class="form-control" name="phone" value="{{ old.phone | default(value=data.phone) }}">
+    </div>
+    <div class="mb-3">
+      <label for="email" class="form-label fw-semibold">Email</label>
+      <input id="email" type="email" class="form-control {% if errors.email %}is-invalid{% endif %}" name="email" value="{{ old.email | default(value=data.email) }}">
+      {% if errors.email %}<div class="invalid-feedback">{{ errors.email }}</div>{% endif %}
+    </div>
+    <div class="mb-3">
+      <label for="timezone" class="form-label fw-semibold">Timezone</label>
+      {% set tzsel = old.timezone | default(value=data.timezone) %}
+      <select id="timezone" name="timezone" class="form-control">
+        {% for tz in timezones %}
+        <option value="{{ tz }}" {% if tzsel == tz %}selected{% endif %}>{{ tz }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label fw-semibold">Password <span class="text-gray-400 text-xs">(leave blank to keep)</span></label>
+      <input id="password" type="password" class="form-control {% if errors.password %}is-invalid{% endif %}" name="password" value="">
+      {% if errors.password %}<div class="invalid-feedback">{{ errors.password }}</div>{% endif %}
+    </div>
+    <div class="mb-3">
+      <label for="password_confirmation" class="form-label fw-semibold">Password Confirm</label>
+      <input id="password_confirmation" type="password" class="form-control {% if errors.password_confirmation %}is-invalid{% endif %}" name="password_confirmation" value="">
+      {% if errors.password_confirmation %}<div class="invalid-feedback">{{ errors.password_confirmation }}</div>{% endif %}
+    </div>
+    <div class="mb-3">
+      <label for="status" class="form-label fw-semibold">Status</label>
+      {% set st = old.status | default(value=data.status) %}
+      <select name="status" id="status" class="form-control" required>
+        <option value="Active" {% if st == 'Active' %}selected{% endif %}>Active</option>
+        <option value="Inactive" {% if st == 'Inactive' %}selected{% endif %}>Inactive</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="picture" class="form-label fw-semibold">Picture</label>
+      <div class="preview mb-3" id="preview"><img src="{{ get_file(path=data.picture) | safe }}" style="max-width:160px" class="rounded border p-1" alt="picture"></div>
+      <input id="picture" type="file" class="form-control {% if errors.picture %}is-invalid{% endif %}" name="picture" accept="image/*" onchange="previewImage(event)">
+      {% if errors.picture %}<div class="text-red-600 text-sm mt-1">{{ errors.picture }}</div>{% endif %}
+    </div>
+    <div class="mb-3">
+      <label class="form-label fw-semibold d-block">Blocked</label>
+      <div class="d-flex flex-wrap gap-3 p-2 rounded border">
+        <label class="d-flex align-items-center gap-2"><input id="blocked" type="checkbox" name="blocked" value="1" class="w-4 h-4" {% if data.blocked %}checked{% endif %}><span>Blokir akun</span></label>
+      </div>
+    </div>
+    <div class="mb-3" id="div_blocked_reason">
+      <label for="blocked_reason" class="form-label fw-semibold">Blocked Reason</label>
+      <input id="blocked_reason" type="text" class="form-control" name="blocked_reason" value="{{ old.blocked_reason | default(value=data.blocked_reason) }}">
+    </div>
+    <div class="mb-4">
+      <label class="form-label fw-semibold d-block">Role</label>
+      <div class="d-flex flex-wrap gap-3 p-2 rounded border {% if errors.roles %}border-danger{% endif %}">
+        {% for role in roles %}
+        <label class="d-flex align-items-center gap-2"><input id="roles{{ loop.index }}" type="checkbox" name="roles" value="{{ role.id }}" class="w-4 h-4" {% if role.id in role_ids %}checked{% endif %}><span>{{ role.name }}</span></label>
+        {% endfor %}
+      </div>
+      {% if errors.roles %}<div class="text-red-600 text-sm mt-1">{{ errors.roles }}</div>{% endif %}
+    </div>
+    <div class="d-flex gap-2">
+      <button type="submit" class="btn btn-primary-tw px-4 py-2"><i class="fas fa-save me-1"></i> Save</button>
+      <a href="{{ route(name='admin.v1.access.user.index') | safe }}" class="btn btn-danger px-4 py-2 text-white">Back</a>
+    </div>
+  </form>
+</div>
+
+<script>
+  function previewImage(event) {
+    const preview = document.getElementById('preview');
+    preview.innerHTML = '';
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e){ const img = document.createElement('img'); img.src = e.target.result; img.style.maxWidth = '160px'; img.className = 'rounded border p-1'; preview.appendChild(img); };
+      reader.readAsDataURL(file);
+    } else { preview.innerHTML = '<p class="text-muted">No image selected</p>'; }
+  }
+  $(document).ready(function(){
+    $('#div_blocked_reason').toggle($('#blocked').is(':checked'));
+    $('#blocked').click(function(){
+      if(this.checked){ $('#div_blocked_reason').show(); } else { $('#blocked_reason').val(''); $('#div_blocked_reason').hide(); }
+    });
+  });
+</script>
+{% endblock content %}

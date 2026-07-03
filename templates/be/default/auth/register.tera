@@ -1,0 +1,24 @@
+{% extends "layouts/be/default/full-width" %}
+{% block content %}
+<div class="tw-card p-8 w-full" style="max-width:420px">
+  <div class="text-center mb-6">
+    <h1 class="text-2xl font-bold">Create account</h1>
+  </div>
+  <form method="POST" action="{{ route(name='web.auth.register.post') | safe }}?_csrf={{ csrf_token }}">
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Name</label>
+      <input type="text" class="form-control" name="name" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Email</label>
+      <input type="email" class="form-control" name="email" required>
+    </div>
+    <div class="mb-4">
+      <label class="form-label fw-semibold">Password</label>
+      <input type="password" class="form-control" name="password" required>
+    </div>
+    <button type="submit" class="btn btn-primary-tw w-100 px-4 py-2">Register</button>
+  </form>
+  <p class="text-center text-sm text-gray-500 mt-4">Have an account? <a href="{{ route(name='web.auth.login') | safe }}" style="color:var(--primary)">Login</a></p>
+</div>
+{% endblock content %}

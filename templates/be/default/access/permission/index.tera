@@ -1,0 +1,124 @@
+{% extends "layouts/be/default/main" %}
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold text-gray-800">Permission Management</h1>
+</div>
+
+<div class="tw-card p-0 overflow-hidden">
+  <div class="px-6 py-4 border-b flex items-center justify-between">
+    <h2 class="text-lg font-bold" style="color:var(--primary)">Permission List</h2>
+    <div class="btn-group btn-sm">
+      <a href="{{ route(name='admin.v1.access.permission.create') | safe }}" class="btn btn-success btn-sm"><i class="fas fa-fw fa-plus"></i> Add Data</a>
+      <button type="submit" form="selection" formmethod="post" formaction="{{ route(name='admin.v1.access.permission.delete_selected') | safe }}?_csrf={{ csrf_token }}" data-confirm="Confirm Delete" class="btn btn-danger btn-sm"><i class="fas fa-fw fa-times"></i> Delete Selected</button>
+    </div>
+  </div>
+
+  <div class="p-4" style="overflow-x:auto">
+    <table class="table table-bordered table-hover align-middle">
+      <thead>
+        <form id="searchform" method="get" action="{{ route(name='admin.v1.access.permission.index') | safe }}">
+          <tr>
+            <th width="2%"></th>
+            <th width="7%">
+              {% set cur_ps = filter.q_page_size | int(default=0) %}
+              <select name="q_page_size" class="form-control">
+                {% for s in [10, 20, 50, 100] %}
+                <option value="{{ s }}" {% if cur_ps == s %}selected{% endif %}>{{ s }}</option>
+                {% endfor %}
+              </select>
+            </th>
+            <th width="18%"><input type="text" class="form-control" name="q_name" value="{{ filter.q_name | default(value='') }}"></th>
+            <th width="9%">
+              <select name="q_guard" class="form-control">
+                <option value="" disabled selected>Select</option>
+                <option value="web" {% if filter.q_guard == 'web' %}selected{% endif %}>web</option>
+                <option value="api" {% if filter.q_guard == 'api' %}selected{% endif %}>api</option>
+              </select>
+            </th>
+            <th width="13%">
+              <select name="q_method" class="form-control">
+                <option value="" disabled selected>Select</option>
+                {% for m in ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'] %}
+                <option value="{{ m }}" {% if filter.q_method == m %}selected{% endif %}>{{ m }}</option>
+                {% endfor %}
+              </select>
+            </th>
+            <th width="10%">
+              <select name="q_status" class="form-control">
+                <option value="" disabled selected>Select</option>
+                <option value="Active" {% if filter.q_status == 'Active' %}selected{% endif %}>Active</option>
+                <option value="Inactive" {% if filter.q_status == 'Inactive' %}selected{% endif %}>Inactive</option>
+              </select>
+            </th>
+            <th width="15%"><input type="text" class="form-control" name="q_desc" value="{{ filter.q_desc | default(value='') }}"></th>
+            <th width="5%" class="text-center align-middle">
+              <div class="btn-group">
+                <button type="submit" class="btn btn-sm btn-success"><i class="fas fa-fw fa-search"></i></button>
+                <a href="{{ route(name='admin.v1.access.permission.index') | safe }}" class="btn btn-sm btn-danger"><i class="fas fa-fw fa-times"></i></a>
+              </div>
+            </th>
+          </tr>
+        </form>
+        <tr>
+          <th width="5%"><input type="checkbox" id="checkall"/></th>
+          <th width="5%">No</th>
+          <th width="18%">Name</th>
+          <th width="9%">Guard</th>
+          <th width="13%">Method</th>
+          <th width="10%">Status</th>
+          <th width="15%">Description</th>
+          <th width="5%">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <form id="selection">
+          {% for data in datas %}
+          <tr>
+            <td><input name="selected[]" value="{{ data.id }}" type="checkbox"/></td>
+            <td>{{ loop.index + (meta.page_size * (meta.page - 1)) }}</td>
+            <td>{{ data.name }}</td>
+            <td><span class="badge text-bg-primary">{{ data.guard_name | default(value='') }}</span></td>
+            <td>{{ data.method | default(value='') }}</td>
+            <td class="text-left">
+              {% if data.status == 'Active' %}
+                <i class="fas fa-check-circle text-green-500 text-xl" title="Active"></i>
+              {% else %}
+                <i class="fas fa-times-circle text-red-500 text-xl" title="Inactive"></i>
+              {% endif %}
+            </td>
+            <td>{{ data.desc | default(value='') }}</td>
+            <td class="text-center">
+              <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle-dd aria-expanded="false">Action</button>
+                <div class="dropdown-menu dropdown-menu-end">
+                  <a href="{{ route(name='admin.v1.access.permission.edit', id=data.id) | safe }}" class="dropdown-item"><i class="fas fa-pen fa-fw"></i> Edit</a>
+                  <div class="dropdown-divider"></div>
+                  <form method="post" action="{{ route(name='admin.v1.access.permission.delete', id=data.id) | safe }}?_method=DELETE&_csrf={{ csrf_token }}" class="m-0">
+                    <button type="submit" data-confirm="Confirm Delete" class="dropdown-item danger"><i class="fas fa-trash fa-fw"></i> Delete</button>
+                  </form>
+                </div>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </form>
+      </tbody>
+    </table>
+
+    <div class="d-flex justify-content-end mt-4">
+      <nav>
+        <ul class="pagination">
+          {% if meta.has_prev %}<li class="page-item"><a class="page-link" href="?q_page={{ meta.page - 1 }}{{ base_query | safe }}">Previous</a></li>{% endif %}
+          {% for p in pages %}
+            {% if p %}<li class="page-item {% if p == meta.page %}active{% endif %}"><a class="page-link" href="?q_page={{ p }}{{ base_query | safe }}">{{ p }}</a></li>
+            {% else %}<li class="page-item"><span class="page-link">…</span></li>{% endif %}
+          {% endfor %}
+          {% if meta.has_next %}<li class="page-item"><a class="page-link" href="?q_page={{ meta.page + 1 }}{{ base_query | safe }}">Next</a></li>{% endif %}
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<script>$("#checkall").click(function(){ $('input:checkbox').not(this).prop('checked', this.checked); });</script>
+{% endblock content %}

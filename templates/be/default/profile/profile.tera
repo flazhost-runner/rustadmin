@@ -1,0 +1,71 @@
+{% extends "layouts/be/default/main" %}
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold text-gray-800">Profile</h1>
+</div>
+
+<div class="tw-card p-6">
+  <h2 class="text-lg font-bold mb-4" style="color:var(--primary)">User Form</h2>
+  <form method="POST" action="{{ route(name='admin.v1.profile.update') | safe }}?_method=PUT&_csrf={{ csrf_token }}" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label for="code" class="form-label fw-semibold">Code</label>
+      <input id="code" type="text" class="form-control" name="code" value="{{ data.code }}">
+    </div>
+    <div class="mb-3">
+      <label for="name" class="form-label fw-semibold">Name</label>
+      <input id="name" type="text" class="form-control" name="name" value="{{ data.name }}">
+    </div>
+    <div class="mb-3">
+      <label for="phone" class="form-label fw-semibold">Phone Number</label>
+      <input id="phone" type="text" class="form-control" name="phone" value="{{ data.phone | default(value='') }}">
+    </div>
+    <div class="mb-3">
+      <label for="email" class="form-label fw-semibold">Email</label>
+      <input id="email" type="email" class="form-control" name="email" value="{{ data.email }}">
+    </div>
+    <div class="mb-3">
+      <label for="timezone" class="form-label fw-semibold">Timezone</label>
+      <select id="timezone" name="timezone" class="form-control">
+        {% for tz in timezones %}
+        <option value="{{ tz }}" {% if data.timezone == tz %}selected{% endif %}>{{ tz }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label fw-semibold">Password</label>
+      <input id="password" type="password" class="form-control" name="password" value="" autocomplete="off">
+    </div>
+    <div class="mb-3">
+      <label for="password_confirmation" class="form-label fw-semibold">Password Confirm</label>
+      <input id="password_confirmation" type="password" class="form-control" name="password_confirmation" value="">
+    </div>
+    <div class="mb-3">
+      <label for="status" class="form-label fw-semibold">Status</label>
+      <select name="status" id="status" class="form-control" required>
+        <option value="Active" {% if data.status == 'Active' %}selected{% endif %}>Active</option>
+        <option value="Inactive" {% if data.status == 'Inactive' %}selected{% endif %}>Inactive</option>
+      </select>
+    </div>
+    <div class="mb-4">
+      <label for="picture" class="form-label fw-semibold">Picture</label>
+      <div class="d-flex align-items-center gap-3">
+        <img id="picturePreview" src="{{ get_file(path=data.picture) | safe }}" width="90" height="90"
+             class="rounded border p-1" style="object-fit:contain;background:#f8fafc" alt="picture">
+        <input id="picture" type="file" name="picture" accept="image/*" class="form-control">
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary-tw px-4 py-2"><i class="fas fa-save me-1"></i> Save</button>
+  </form>
+</div>
+
+<script>
+  (function () {
+    var input = document.getElementById('picture'), prev = document.getElementById('picturePreview');
+    if (!input || !prev) return;
+    input.addEventListener('change', function () {
+      var f = this.files && this.files[0];
+      if (f && f.type.startsWith('image/')) { prev.src = URL.createObjectURL(f); prev.style.visibility = 'visible'; }
+    });
+  })();
+</script>
+{% endblock content %}

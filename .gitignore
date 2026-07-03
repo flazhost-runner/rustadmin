@@ -1,0 +1,24 @@
+/target
+**/*.rs.bk
+Cargo.lock.orig
+
+# Local env
+.env
+.env.local
+
+# SQLite dev databases
+*.sqlite
+*.sqlite3
+*.db
+
+# Frontend template cache (downloaded on-demand) — keep curated catalog only
+/public/fe/templates/*
+!/public/fe/templates/_catalog.json
+
+# Uploads / storage (dev)
+/storage/*
+!/storage/.gitkeep
+
+# Coverage / build artifacts
+/coverage
+*.profraw

@@ -1,0 +1,31 @@
+<!-- Topbar (Tailwind, themeable) -->
+<header class="tw-card !rounded-none md:!rounded-xl bg-white px-4 md:px-6 py-3 mb-6 flex items-center justify-between sticky top-0 z-20 shadow-sm">
+    <div class="flex items-center gap-3">
+        <button id="tw-sidebar-toggle" class="md:hidden text-2xl text-primary-tw" aria-label="Menu">
+            <i class="fas fa-bars"></i>
+        </button>
+        <a href="{{ route(name='admin.v1.dashboard.index') | safe }}" class="text-primary-tw text-xl">
+            <i class="fas fa-home"></i>
+        </a>
+    </div>
+
+    <!-- User dropdown (avatar / icon fallback + gear). Logout is POST via hidden form. -->
+    <div class="dropdown">
+        <a class="flex items-center gap-2 no-underline cursor-pointer" href="#" data-toggle-dd>
+            <span class="hidden lg:inline text-gray-500">Welcome, {{ auth.name }}</span>
+            {% if auth.picture %}
+            <img class="rounded-full" style="width:38px;height:38px;object-fit:cover" src="{{ get_file(path=auth.picture) | safe }}" alt="user">
+            {% else %}
+            <span class="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center text-gray-500"><i class="fas fa-user"></i></span>
+            {% endif %}
+            <i class="bi bi-gear" style="color:var(--primary)"></i>
+        </a>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="{{ route(name='admin.v1.profile.index') | safe }}"><i class="fas fa-user fa-fw"></i> Profile</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fas fa-sign-out-alt fa-fw"></i> Logout</a>
+            <form id="logout-form" action="{{ route(name='web.auth.logout') | safe }}{% if csrf_token %}?_csrf={{ csrf_token }}{% endif %}" method="POST" style="display:none;"></form>
+        </div>
+    </div>
+</header>
+<!-- End Topbar -->

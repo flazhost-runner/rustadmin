@@ -1,0 +1,16 @@
+{% include "layouts/be/default/head" %}
+<body class="min-h-screen flex items-center justify-center p-4">
+    {% block content %}{% endblock content %}
+    {% include "layouts/be/default/foot" %}
+
+    {% if flash.message %}
+    <script>
+        (function () {
+            var type = '{{ flash.key }}' === 'success' ? 'success'
+                     : '{{ flash.key }}' === 'error' ? 'error' : 'info';
+            Toast({{ flash.message | json_encode | safe }}, type);
+        })();
+    </script>
+    {% endif %}
+</body>
+</html>

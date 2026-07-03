@@ -1,0 +1,273 @@
+{% extends "layouts/be/default/main" %}
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold text-gray-800">Setting Management</h1>
+</div>
+
+<!-- Catalog search form (GET, separate from the setting POST form). Inputs associate via form="fe_search". -->
+<form id="fe_search" method="GET" action="{{ route(name='admin.v1.setting.index') | safe }}"></form>
+
+<form method="POST" action="{{ route(name='admin.v1.setting.update') | safe }}?_method=PUT&_csrf={{ csrf_token }}" enctype="multipart/form-data">
+
+  <!-- ===== Admin Theme ===== -->
+  <div class="tw-card p-6 mb-6">
+    <div class="flex items-center gap-2 mb-1">
+      <i class="fas fa-palette" style="color:var(--primary)"></i>
+      <h2 class="text-lg font-bold" style="color:var(--primary)">Admin Theme</h2>
+    </div>
+    <p class="text-sm text-gray-500 mb-4">Pick a template — the whole admin restyles after you Save.</p>
+
+    {% set active_theme = setting.theme | default(value=themeName) %}
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+      {% for p in themes %}
+      <label class="cursor-pointer block">
+        <input type="radio" name="theme" value="{{ p.name }}" class="sr-only theme-radio" {% if p.name == active_theme %}checked{% endif %}>
+        <div class="theme-swatch rounded-xl overflow-hidden border-2 transition {% if p.name == active_theme %}border-gray-800{% else %}border-transparent{% endif %}" style="box-shadow:0 4px 10px rgba(0,0,0,.08)">
+          <div class="h-16 flex">
+            <div class="flex-1" style="background:{{ p.dark }}"></div>
+            <div class="flex-1" style="background:{{ p.primary }}"></div>
+            <div class="flex-1" style="background:{{ p.secondary }}"></div>
+            <div class="flex-1" style="background:{{ p.light }}"></div>
+          </div>
+          <div class="bg-white py-2 px-3 flex items-center justify-between">
+            <span class="text-sm font-semibold text-gray-700">{{ p.name }}</span>
+            <i class="fas fa-check-circle check-icon {% if p.name != active_theme %}hidden{% endif %}" style="color:{{ p.primary }}"></i>
+          </div>
+        </div>
+      </label>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- ===== Frontend Template ===== -->
+  <div class="tw-card p-6 mb-6">
+    <div class="flex items-center gap-2 mb-1">
+      <i class="fas fa-window-maximize" style="color:var(--primary)"></i>
+      <h2 class="text-lg font-bold" style="color:var(--primary)">Frontend Template</h2>
+    </div>
+    <p class="text-sm text-gray-500 mb-4">
+      Pick a public landing design from
+      <a href="https://github.com/lindoai/opentailwind" target="_blank" class="underline">opentailwind</a>
+      ({{ fe_meta.total }} templates). Click <b>Preview</b> for full view. The selected template is downloaded &amp; cached on <b>Save</b>. See it on the
+      <a href="/" target="_blank" class="underline" style="color:var(--primary)">landing page ↗</a>.
+    </p>
+
+    <!-- Selected slug (submitted with the setting POST form); persisted via localStorage. -->
+    <input type="hidden" id="fe_template_input" name="fe_template" value="{{ fe_active }}">
+
+    <!-- Search + category filter (GET, server-side) -->
+    <div class="flex flex-wrap items-end gap-2 mb-4">
+      <div>
+        <label class="block text-xs text-gray-500 mb-1">Search name</label>
+        <input form="fe_search" type="text" name="fe_search" value="{{ filter.q_name }}" placeholder="e.g. agency, saas…" class="form-control" style="min-width:220px">
+      </div>
+      <div>
+        <label class="block text-xs text-gray-500 mb-1">Category</label>
+        <select form="fe_search" name="fe_category" class="form-control" style="min-width:200px">
+          <option value="">All categories</option>
+          {% for c in fe_categories %}
+          <option value="{{ c }}" {% if filter.q_category == c %}selected{% endif %}>{{ c }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button form="fe_search" type="submit" class="btn btn-success btn-sm" style="height:38px"><i class="fas fa-search me-1"></i> Search</button>
+      <a href="{{ route(name='admin.v1.setting.index') | safe }}" class="btn btn-danger btn-sm" style="height:38px"><i class="fas fa-times me-1"></i> Reset</a>
+    </div>
+
+    {% if fe_catalog | length == 0 %}
+    <div class="text-center text-gray-400 py-10"><i class="fas fa-search fa-2x mb-2"></i><p>No template matches your search.</p></div>
+    {% endif %}
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      {% for t in fe_catalog %}
+      {% set active = fe_active == t.slug %}
+      <div class="fe-card block" data-slug="{{ t.slug }}">
+        <div class="fe-swatch rounded-xl overflow-hidden border-2 transition {% if active %}border-gray-900{% else %}border-gray-300{% endif %}" style="box-shadow:0 2px 8px rgba(0,0,0,.12)">
+          <div class="fe-thumb fe-preview-trigger relative bg-gray-100 cursor-pointer group" data-slug="{{ t.slug }}" data-name="{{ t.name }}"
+               style="height:140px;overflow:hidden;border-bottom:1px solid #d1d5db;border-top-left-radius:.7rem;border-top-right-radius:.7rem;transform:translateZ(0)"
+               data-preview-url="{{ route(name='admin.v1.setting.fe_preview', slug=t.slug) | safe }}">
+            <div class="fe-thumb-placeholder absolute inset-0 flex items-center justify-center text-gray-300"><i class="fas fa-spinner fa-spin"></i></div>
+            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition" style="background:rgba(0,0,0,.45);pointer-events:none">
+              <span class="text-white text-sm font-semibold"><i class="fas fa-eye me-1"></i> Preview</span>
+            </div>
+          </div>
+          <div class="bg-white py-2 px-3">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-semibold text-gray-800 truncate" title="{{ t.name }}">{{ t.name }}</span>
+              <i class="fas fa-check-circle fe-check {% if not active %}hidden{% endif %}" style="color:var(--primary)"></i>
+            </div>
+            <span class="text-xs text-gray-400">{{ t.category }}</span>
+            <button type="button" class="fe-select btn btn-sm w-100 mt-2 fw-bold {% if active %}btn-primary-tw{% else %}btn-outline-dark{% endif %}" style="font-size:13px;letter-spacing:.3px">
+              <i class="fas {% if active %}fa-check{% else %}fa-hand-pointer{% endif %} me-1"></i> {% if active %}SELECTED{% else %}SELECT{% endif %}
+            </button>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% if fe_meta.total_pages > 1 %}
+    <div class="d-flex justify-content-center mt-5">
+      <nav>
+        <ul class="pagination">
+          {% if fe_meta.has_prev %}<li class="page-item"><a class="page-link" href="?fe_page={{ fe_meta.page - 1 }}&fe_search={{ fe_search }}&fe_category={{ fe_category }}">Previous</a></li>{% endif %}
+          {% for pg in fe_pages %}
+            {% if pg %}<li class="page-item {% if pg == fe_meta.page %}active{% endif %}"><a class="page-link" href="?fe_page={{ pg }}&fe_search={{ fe_search }}&fe_category={{ fe_category }}">{{ pg }}</a></li>
+            {% else %}<li class="page-item disabled"><span class="page-link">…</span></li>{% endif %}
+          {% endfor %}
+          {% if fe_meta.has_next %}<li class="page-item"><a class="page-link" href="?fe_page={{ fe_meta.page + 1 }}&fe_search={{ fe_search }}&fe_category={{ fe_category }}">Next</a></li>{% endif %}
+        </ul>
+      </nav>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- ===== Setting Form ===== -->
+  <div class="tw-card p-6">
+    <h2 class="text-lg font-bold mb-4" style="color:var(--primary)">Setting Form</h2>
+
+    <div class="mb-3">
+      <label for="initial" class="form-label fw-semibold">Company Initial [initial]</label>
+      <input id="initial" type="text" class="form-control" name="initial" value="{{ setting.initial | default(value='') }}">
+    </div>
+    <div class="mb-3">
+      <label for="name" class="form-label fw-semibold">Company Name [name]</label>
+      <input id="name" type="text" class="form-control" name="name" value="{{ setting.name | default(value='') }}">
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label fw-semibold">Description [description]</label>
+      <textarea id="description" class="trumbowyg-editor form-control" name="description">{{ setting.description | default(value='') | safe }}</textarea>
+    </div>
+    <div class="mb-4">
+      <label for="icon" class="form-label fw-semibold">Company Icon [icon]</label>
+      <div class="d-flex align-items-center gap-3">
+        <img src="{{ get_file(path=setting.icon) | safe }}" width="90" height="90" class="rounded border p-1" style="object-fit:contain" alt="icon">
+        <input id="icon" type="file" class="form-control" name="icon">
+      </div>
+    </div>
+    <div class="mb-4">
+      <label for="logo" class="form-label fw-semibold">Company Logo [logo]</label>
+      <div class="d-flex align-items-center gap-3">
+        <img src="{{ get_file(path=setting.logo) | safe }}" width="90" height="90" class="rounded border p-1" style="object-fit:contain" alt="logo">
+        <input id="logo" type="file" class="form-control" name="logo">
+      </div>
+    </div>
+    <div class="mb-4">
+      <label for="login_image" class="form-label fw-semibold">Login Image [login_image]</label>
+      <div class="d-flex align-items-center gap-3">
+        <img src="{{ get_file(path=setting.login_image) | safe }}" width="90" height="90" class="rounded border p-1" style="object-fit:contain" alt="login_image">
+        <input id="login_image" type="file" class="form-control" name="login_image">
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="phone" class="form-label fw-semibold">Phone [phone]</label>
+      <input id="phone" type="text" class="form-control" name="phone" value="{{ setting.phone | default(value='') }}">
+    </div>
+    <div class="mb-3">
+      <label for="address" class="form-label fw-semibold">Address [address]</label>
+      <input id="address" type="text" class="form-control" name="address" value="{{ setting.address | default(value='') }}">
+    </div>
+    <div class="mb-3">
+      <label for="email" class="form-label fw-semibold">Email [email]</label>
+      <input id="email" type="email" class="form-control" name="email" value="{{ setting.email | default(value='') }}">
+    </div>
+    <div class="mb-4">
+      <label for="copyright" class="form-label fw-semibold">Copyright Text [copyright]</label>
+      <input id="copyright" type="text" class="form-control" name="copyright" value="{{ setting.copyright | default(value='') }}">
+    </div>
+
+    <button type="submit" class="btn btn-primary-tw px-4 py-2"><i class="fas fa-save me-1"></i> Save</button>
+  </div>
+</form>
+
+<script>
+  // Highlight selected theme swatch immediately (UX) before submit.
+  document.querySelectorAll('.theme-radio').forEach(function (r) {
+    r.addEventListener('change', function () {
+      document.querySelectorAll('.theme-swatch').forEach(function (s) { s.classList.remove('border-gray-800'); s.classList.add('border-transparent'); });
+      document.querySelectorAll('.check-icon').forEach(function (c) { c.classList.add('hidden'); });
+      var box = r.closest('label').querySelector('.theme-swatch');
+      box.classList.add('border-gray-800'); box.classList.remove('border-transparent');
+      r.closest('label').querySelector('.check-icon').classList.remove('hidden');
+    });
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var LS_PREFIX = 'fe_tpl_html:', LS_SEL = 'fe_tpl_selected';
+    var input = document.getElementById('fe_template_input');
+    var savedSel = localStorage.getItem(LS_SEL);
+    if (savedSel && input) input.value = savedSel;
+
+    function forceLight(html) {
+      var inject = '<meta name="color-scheme" content="light">' +
+        '<style type="text/tailwindcss">@custom-variant dark (&:where(.dark, .dark *));</style>' +
+        '<style>:root{color-scheme:light !important}@media (prefers-color-scheme: dark){:root{color-scheme:light !important}}</style>';
+      if (/<head[^>]*>/i.test(html)) { return html.replace(/<head[^>]*>/i, function (m) { return m + inject; }); }
+      return inject + html;
+    }
+    function getHtml(slug, url) {
+      var cached = null; try { cached = localStorage.getItem(LS_PREFIX + slug); } catch (e) {}
+      if (cached) return Promise.resolve(cached);
+      return fetch(url, { credentials: 'same-origin' })
+        .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+        .then(function (html) { try { localStorage.setItem(LS_PREFIX + slug, html); } catch (e) {} return html; });
+    }
+    function renderThumb(box) {
+      var slug = box.getAttribute('data-slug'), url = box.getAttribute('data-preview-url');
+      getHtml(slug, url).then(function (html) {
+        var ph = box.querySelector('.fe-thumb-placeholder'); if (ph) ph.remove();
+        var ifr = document.createElement('iframe');
+        ifr.setAttribute('scrolling', 'no'); ifr.setAttribute('loading', 'lazy');
+        var DESIGN_W = 1280, scale = (box.clientWidth || 280) / DESIGN_W;
+        ifr.style.cssText = 'width:' + DESIGN_W + 'px;height:' + Math.ceil(140 / scale) + 'px;border:0;transform:scale(' + scale + ');transform-origin:top left;pointer-events:none';
+        ifr.srcdoc = forceLight(html); box.appendChild(ifr);
+      }).catch(function () { var ph = box.querySelector('.fe-thumb-placeholder'); if (ph) ph.innerHTML = '<i class="fas fa-image text-2xl"></i>'; });
+    }
+    var thumbs = document.querySelectorAll('.fe-thumb');
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) { entries.forEach(function (en) { if (en.isIntersecting) { renderThumb(en.target); io.unobserve(en.target); } }); }, { rootMargin: '200px' });
+      thumbs.forEach(function (t) { io.observe(t); });
+    } else { thumbs.forEach(renderThumb); }
+
+    function selectSlug(slug) {
+      if (input) input.value = slug;
+      try { localStorage.setItem(LS_SEL, slug); } catch (e) {}
+      document.querySelectorAll('.fe-card').forEach(function (card) {
+        var active = card.getAttribute('data-slug') === slug;
+        var swatch = card.querySelector('.fe-swatch'), check = card.querySelector('.fe-check'), btn = card.querySelector('.fe-select');
+        swatch.classList.toggle('border-gray-900', active); swatch.classList.toggle('border-gray-300', !active);
+        if (check) check.classList.toggle('hidden', !active);
+        if (btn) {
+          btn.innerHTML = active ? '<i class="fas fa-check me-1"></i> SELECTED' : '<i class="fas fa-hand-pointer me-1"></i> SELECT';
+          btn.classList.toggle('btn-primary-tw', active); btn.classList.toggle('btn-outline-dark', !active);
+        }
+      });
+    }
+    document.querySelectorAll('.fe-select').forEach(function (b) { b.addEventListener('click', function () { selectSlug(this.closest('.fe-card').getAttribute('data-slug')); }); });
+    if (input && input.value) selectSlug(input.value);
+
+    var modal = document.getElementById('fe-preview-modal'), frame = document.getElementById('fe-preview-frame'), title = document.getElementById('fe-preview-title');
+    function openModal(slug, name, url) {
+      title.textContent = name; frame.srcdoc = '<div style="font-family:sans-serif;padding:40px">Loading…</div>';
+      modal.classList.remove('hidden'); modal.classList.add('flex');
+      getHtml(slug, url).then(function (html) { frame.srcdoc = forceLight(html); }).catch(function () { frame.srcdoc = '<p style="padding:40px;font-family:sans-serif">Failed to load preview.</p>'; });
+    }
+    function closeModal() { modal.classList.add('hidden'); modal.classList.remove('flex'); frame.srcdoc = ''; }
+    document.querySelectorAll('.fe-preview-trigger').forEach(function (b) { b.addEventListener('click', function () { openModal(this.getAttribute('data-slug'), this.getAttribute('data-name'), this.getAttribute('data-preview-url')); }); });
+    document.getElementById('fe-preview-close').addEventListener('click', closeModal);
+    modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
+  });
+</script>
+
+<!-- Full FE template preview modal -->
+<div id="fe-preview-modal" class="hidden fixed inset-0 z-50 items-center justify-center" style="background:rgba(0,0,0,.6)">
+  <div class="bg-white rounded-xl overflow-hidden shadow-2xl" style="width:92vw;height:90vh;display:flex;flex-direction:column">
+    <div class="flex items-center justify-between px-4 py-3 border-b">
+      <h3 id="fe-preview-title" class="font-bold text-gray-800">Preview</h3>
+      <button id="fe-preview-close" type="button" class="btn btn-sm btn-danger"><i class="fas fa-times"></i> Close</button>
+    </div>
+    <iframe id="fe-preview-frame" class="flex-1 w-full" style="border:0"></iframe>
+  </div>
+</div>
+{% endblock content %}

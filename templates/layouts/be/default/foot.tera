@@ -1,0 +1,203 @@
+<!-- Rich text editor for .trumbowyg (plain) & .trumbowyg-editor (+ file manager) -->
+<script>
+    (function () {
+        if (!(window.jQuery && jQuery.fn.trumbowyg)) return;
+        $(".trumbowyg").trumbowyg();
+        $(".trumbowyg-editor").trumbowyg({
+            btns: [
+                ['viewHTML'],
+                ['formatting'],
+                ['strong', 'em', 'del'],
+                ['superscript', 'subscript'],
+                ['link'],
+                ['filemanager'],
+                ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+                ['unorderedList', 'orderedList'],
+                ['horizontalRule'],
+                ['removeformat'],
+                ['fullscreen']
+            ],
+            semantic: { div: 'div' },
+            removeformatPasted: true,
+            autogrow: true,
+            plugins: { filemanager: true }
+        });
+        // On submit, sync editor HTML → source textarea.
+        $("form").on("submit", function () {
+            $(this).find(".trumbowyg, .trumbowyg-editor").each(function () {
+                if ($(this).data('trumbowyg')) $(this).val($(this).trumbowyg('html'));
+            });
+        });
+    })();
+</script>
+
+<!-- Toggle sidebar (mobile) -->
+<script>
+    (function () {
+        var sb = document.getElementById('tw-sidebar');
+        var ov = document.getElementById('tw-sidebar-overlay');
+        var btn = document.getElementById('tw-sidebar-toggle');
+        function open() { sb.classList.remove('-translate-x-full'); ov.classList.remove('hidden'); }
+        function close() { sb.classList.add('-translate-x-full'); ov.classList.add('hidden'); }
+        if (btn) btn.addEventListener('click', open);
+        if (ov) ov.addEventListener('click', close);
+    })();
+</script>
+
+<!-- Auto-inject CSRF token into all non-GET forms.
+     RustAdmin reads the token from header/query (NOT the form body) so the check never
+     parses the request body; we therefore append `_csrf` to the form's action query. -->
+<script>
+    (function () {
+        var meta = document.querySelector('meta[name="csrf-token"]');
+        if (!meta) return;
+        var token = meta.getAttribute('content');
+        document.querySelectorAll('form').forEach(function (f) {
+            var method = (f.getAttribute('method') || 'get').toLowerCase();
+            if (method === 'get') return;
+            var action = f.getAttribute('action') || '';
+            if (action.indexOf('_csrf=') === -1) {
+                action += (action.indexOf('?') !== -1 ? '&' : '?') + '_csrf=' + encodeURIComponent(token);
+                f.setAttribute('action', action);
+            }
+        });
+    })();
+</script>
+
+<!-- Fallback for failed image loads → context-aware Font Awesome placeholder -->
+<script>
+    (function () {
+        function placeholder(img) {
+            if (img.dataset.imgFallback) return;
+            img.dataset.imgFallback = '1';
+
+            var cls = (img.className || '') + ' ' + (img.getAttribute('alt') || '');
+            var isAvatar = /img-profile|picture|avatar|user/i.test(cls);
+            var isCircle = /rounded-full|rounded-circle|img-profile/i.test(cls);
+            var icon = isAvatar ? 'fa-user' : 'fa-image';
+
+            var w = img.getAttribute('width') || img.offsetWidth || 40;
+            var h = img.getAttribute('height') || img.offsetHeight || 40;
+            var box = document.createElement('span');
+            box.className = 'img-placeholder ' + (img.className || '');
+            box.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;' +
+                'width:' + w + 'px;height:' + h + 'px;background:#f1f5f9;color:#94a3b8;' +
+                (isCircle ? 'border-radius:9999px;' : 'border-radius:.5rem;');
+            box.innerHTML = '<i class="fas ' + icon + '" style="font-size:' + Math.max(14, Math.min(w, h) * 0.45) + 'px"></i>';
+            if (img.parentNode) img.parentNode.replaceChild(box, img);
+        }
+        document.addEventListener('error', function (e) {
+            var t = e.target;
+            if (t && t.tagName === 'IMG') placeholder(t);
+        }, true);
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('img').forEach(function (img) {
+                if (img.complete && img.naturalWidth === 0) placeholder(img);
+            });
+        });
+    })();
+</script>
+
+<!-- Dropdown (vanilla, replaces Bootstrap JS) -->
+<script>
+    (function () {
+        document.addEventListener('click', function (e) {
+            var trigger = e.target.closest('[data-toggle-dd]');
+            var box = trigger ? trigger.closest('.dropdown, .btn-group') : null;
+            var current = box ? box.querySelector('.dropdown-menu') : null;
+            document.querySelectorAll('.dropdown-menu.show').forEach(function (m) {
+                if (m !== current) m.classList.remove('show');
+            });
+            if (current) {
+                e.preventDefault();
+                current.classList.toggle('show');
+            }
+        });
+    })();
+</script>
+
+<!-- Popups: Toast, Modal, Confirm dialog (vanilla, themeable) -->
+<div class="toast-container" id="tw-toasts"></div>
+<div class="modal-overlay" id="tw-modal">
+  <div class="modal-box">
+    <div class="modal-header"><span id="tw-modal-title">Confirm</span><button type="button" class="modal-close" data-modal-close>&times;</button></div>
+    <div class="modal-body" id="tw-modal-body"></div>
+    <div class="modal-footer" id="tw-modal-footer"></div>
+  </div>
+</div>
+<script>
+    (function () {
+        // ---- Toast ----
+        window.Toast = function (message, type) {
+            type = type || 'info';
+            var c = document.getElementById('tw-toasts');
+            var t = document.createElement('div');
+            t.className = 'toast ' + type;
+            var icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-times-circle' : 'fa-info-circle';
+            t.innerHTML = '<i class="fas ' + icon + '"></i><span></span>';
+            t.querySelector('span').textContent = message;
+            c.appendChild(t);
+            requestAnimationFrame(function () { t.classList.add('show'); });
+            setTimeout(function () {
+                t.classList.remove('show');
+                setTimeout(function () { t.remove(); }, 300);
+            }, 3500);
+        };
+
+        // ---- Modal & Confirm ----
+        var overlay = document.getElementById('tw-modal');
+        var titleEl = document.getElementById('tw-modal-title');
+        var bodyEl = document.getElementById('tw-modal-body');
+        var footEl = document.getElementById('tw-modal-footer');
+        function closeModal() { overlay.classList.remove('show'); }
+        overlay.addEventListener('click', function (e) {
+            if (e.target === overlay || e.target.hasAttribute('data-modal-close')) closeModal();
+        });
+
+        window.Modal = {
+            open: function (opts) {
+                titleEl.textContent = opts.title || 'Info';
+                bodyEl.innerHTML = opts.body || '';
+                footEl.innerHTML = '';
+                (opts.buttons || [{ label: 'Close', class: 'btn btn-primary-tw px-4 py-2', onClick: closeModal }]).forEach(function (b) {
+                    var btn = document.createElement('button');
+                    btn.className = b.class || 'btn btn-primary-tw px-4 py-2';
+                    btn.textContent = b.label;
+                    btn.addEventListener('click', function () { if (b.onClick) b.onClick(); if (b.close !== false) closeModal(); });
+                    footEl.appendChild(btn);
+                });
+                overlay.classList.add('show');
+            },
+            close: closeModal,
+        };
+
+        // confirmDialog → Promise<boolean> (themed replacement for confirm())
+        window.confirmDialog = function (message, opts) {
+            opts = opts || {};
+            return new Promise(function (resolve) {
+                window.Modal.open({
+                    title: opts.title || 'Confirm',
+                    body: '<p>' + message + '</p>',
+                    buttons: [
+                        { label: opts.cancelText || 'Cancel', class: 'btn btn-danger px-4 py-2 text-white', onClick: function () { resolve(false); } },
+                        { label: opts.okText || 'Yes', class: 'btn btn-primary-tw px-4 py-2', onClick: function () { resolve(true); } },
+                    ],
+                });
+            });
+        };
+
+        // Auto-handle elements with data-confirm (form submit & links)
+        document.addEventListener('click', function (e) {
+            var el = e.target.closest('[data-confirm]');
+            if (!el) return;
+            e.preventDefault();
+            var msg = el.getAttribute('data-confirm') || 'Are you sure?';
+            confirmDialog(msg).then(function (ok) {
+                if (!ok) return;
+                if (el.tagName === 'A' && el.href) { window.location.href = el.href; }
+                else if (el.form) { el.form.submit(); }
+                else if (el.closest('form')) { el.closest('form').submit(); }
+            });
+        });
+    })();
+</script>
