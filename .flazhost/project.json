@@ -1,9 +1,0 @@
-{
-  "name": "RustAdmin",
-  "language": "rust",
-  "install": ["cargo build"],
-  "migrate": ["cargo run --bin migrate"],
-  "start": "cargo run",
-  "url": "http://localhost:${APP_PORT}",
-  "readyPath": "/"
-}
