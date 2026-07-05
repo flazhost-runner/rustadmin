@@ -205,7 +205,7 @@
 
 <script>
   // Aksen tema dari server (template switcher)
-  var cs=getComputedStyle(document.documentElement); var THEME={primary:cs.getPropertyValue('--primary').trim()||'#3B82F6',secondary:cs.getPropertyValue('--secondary').trim()||'#60A5FA',light:cs.getPropertyValue('--theme-light').trim()||'#EFF6FF',dark:cs.getPropertyValue('--theme-dark').trim()||'#1E3A8A'};
+  var cs=getComputedStyle(document.documentElement); var THEME={primary:cs.getPropertyValue('--primary').trim()||'#3B82F6',secondary:cs.getPropertyValue('--secondary').trim()||'#60A5FA',light:cs.getPropertyValue('--theme-light').trim()||'#DBEAFE',dark:cs.getPropertyValue('--theme-dark').trim()||'#1E40AF'};
 
   // Counter animation
   document.querySelectorAll('.counter').forEach(function(el){

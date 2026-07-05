@@ -64,6 +64,16 @@ async fn admin_pages_render() {
             vec![
                 "Admin Theme",
                 "theme-swatch",
+                // all 9 canonical palettes offered by the switcher
+                "value=\"Blue\"",
+                "value=\"Black\"",
+                "value=\"Brown\"",
+                "value=\"Green\"",
+                "value=\"Grey\"",
+                "value=\"Orange\"",
+                "value=\"Purple\"",
+                "value=\"Red\"",
+                "value=\"Yellow\"",
                 "Frontend Template",
                 "fe-card",
                 "Setting Form",
