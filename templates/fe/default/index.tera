@@ -1,73 +1,570 @@
 {% extends "layouts/fe/default/main" %}
 {% block content %}
-<!-- Hero -->
-<section class="relative px-6 py-28 text-center bg-gradient-to-b from-indigo-50 via-white to-white overflow-hidden">
-  <div class="max-w-3xl mx-auto" data-reveal>
-    <p class="uppercase tracking-[0.3em] text-indigo-500 text-xs font-semibold">{% if setting.initial %}{{ setting.initial }}{% else %}Welcome{% endif %}</p>
-    <h1 class="text-4xl md:text-6xl font-extrabold mt-4 leading-tight">{% if setting.name %}{{ setting.name }}{% else %}RustAdmin{% endif %}</h1>
-    <div class="text-slate-500 mt-6 text-lg">
-      {% if setting.description %}{{ setting.description | safe }}{% else %}<p>A fast, secure admin starter — built with Rust &amp; Rocket.</p>{% endif %}
-    </div>
-    <div class="mt-8 flex gap-3 justify-center">
-      <a href="/auth/login" class="px-7 py-3 rounded-lg bg-indigo-600 text-white font-medium">Get Started</a>
-      <a href="#services" class="px-7 py-3 rounded-lg border border-slate-300 font-medium">Learn more</a>
+<section id="_hero_digital_agency_v6_001" class="py-20 sm:py-24 bg-white dark:bg-neutral-950">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Stacked Layout -->
+    <div class="flex flex-col gap-12">
+      <!-- Full-width Image -->
+      <div class="w-full h-72 sm:h-96 rounded-3xl overflow-hidden relative" data-motion="image">
+        <img data-motion="image"
+          src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1400&auto=format&fit=crop&q=80"
+          alt="Digital agency team collaboration"
+          class="w-full h-full object-cover"
+        >
+        <!-- Floating Badge -->
+        <div data-motion="card" class="absolute top-6 left-6 px-4 py-2 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-xs rounded-full">
+          <span data-motion="badge" class="text-orange-600 dark:text-orange-400 text-sm font-semibold">Since 2012</span>
+        </div>
+      </div>
+
+      <!-- Content Grid -->
+      <div class="grid lg:grid-cols-5 gap-10">
+        <!-- Main Content - 3 columns -->
+        <div class="lg:col-span-3" data-motion="hero">
+          <!-- Hero — bind ke landing (badge=AppName, heading=AppName, deskripsi). -->
+          <span data-motion="badge" class="text-orange-600 dark:text-orange-400 text-sm font-semibold tracking-wide uppercase mb-4 block">{{ landing.app_name }}</span>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-neutral-900 dark:text-white leading-tight mb-6">
+            <span data-animate="heading">Welcome to</span><br>
+            <span data-animate="heading" class="text-orange-600 dark:text-orange-400">{{ landing.app_name }}</span>
+          </h1>
+          <p class="text-lg text-neutral-600 dark:text-neutral-400 mb-8" data-animate="text">
+            {% if landing.description %}{{ landing.description | safe }}{% else %}Partner with us to transform your vision into exceptional digital experiences. From strategy to execution, we deliver solutions that drive growth and innovation.{% endif %}
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <a href="/auth/login" data-motion="button" class="px-6 py-3 bg-orange-600 hover:bg-orange-700 transition-colors rounded-full text-white font-semibold">
+              Start Your Project
+            </a>
+            <a href="#" data-motion="button" class="inline-flex items-center gap-2 text-orange-600 dark:text-orange-400 font-semibold hover:gap-3 transition-all duration-300">
+              View Case Studies
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Stats - 2 columns -->
+        <div class="lg:col-span-2 flex flex-col gap-6">
+          <div data-motion="card" class="p-6 bg-orange-50 dark:bg-orange-950/30 rounded-2xl">
+            <span class="text-4xl font-bold text-orange-600 dark:text-orange-400 block mb-1">150+</span>
+            <span class="text-neutral-600 dark:text-neutral-400">Projects delivered for clients worldwide</span>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div data-motion="card" class="p-5 bg-neutral-50 dark:bg-neutral-900 rounded-2xl">
+              <span class="text-2xl font-bold text-neutral-900 dark:text-white block">12</span>
+              <span class="text-neutral-500 dark:text-neutral-400 text-sm">Years</span>
+            </div>
+            <div data-motion="card" class="p-5 bg-neutral-50 dark:bg-neutral-900 rounded-2xl">
+              <span class="text-2xl font-bold text-neutral-900 dark:text-white block">98%</span>
+              <span class="text-neutral-500 dark:text-neutral-400 text-sm">Satisfaction</span>
+            </div>
+          </div>
+          <div data-motion="card" class="p-5 bg-neutral-50 dark:bg-neutral-900 rounded-2xl">
+            <div class="flex items-center gap-3">
+              <div class="flex -space-x-2">
+                <img data-motion="avatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80" alt="Team member" class="w-8 h-8 rounded-full border-2 border-white dark:border-neutral-900 object-cover">
+                <img data-motion="avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" alt="Team member" class="w-8 h-8 rounded-full border-2 border-white dark:border-neutral-900 object-cover">
+                <img data-motion="avatar" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&auto=format&fit=crop&q=80" alt="Team member" class="w-8 h-8 rounded-full border-2 border-white dark:border-neutral-900 object-cover">
+              </div>
+              <span class="text-neutral-600 dark:text-neutral-400 text-sm">35+ team members</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Services Row -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 pt-8 border-t border-neutral-200 dark:border-neutral-800" data-motion="social-proof">
+        <div class="flex items-center gap-2 text-neutral-600 dark:text-neutral-400">
+          <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+          <span class="text-sm font-medium">Web Development</span>
+        </div>
+        <div class="flex items-center gap-2 text-neutral-600 dark:text-neutral-400">
+          <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
+          </svg>
+          <span class="text-sm font-medium">Brand Design</span>
+        </div>
+        <div class="flex items-center gap-2 text-neutral-600 dark:text-neutral-400">
+          <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/>
+          </svg>
+          <span class="text-sm font-medium">Digital Marketing</span>
+        </div>
+        <div class="flex items-center gap-2 text-neutral-600 dark:text-neutral-400">
+          <svg class="w-5 h-5 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+          </svg>
+          <span class="text-sm font-medium">Mobile Apps</span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
+<section id="_clients_simple_header_v6_001" class="py-20 sm:py-24 bg-orange-50 dark:bg-orange-950/20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-<!-- Stats -->
-<section class="px-6 py-14 bg-white">
-  <div class="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-    <div data-reveal><p class="text-4xl font-extrabold text-indigo-600">99.9%</p><p class="text-slate-500 text-sm mt-1">Uptime</p></div>
-    <div data-reveal><p class="text-4xl font-extrabold text-indigo-600">12k+</p><p class="text-slate-500 text-sm mt-1">Users</p></div>
-    <div data-reveal><p class="text-4xl font-extrabold text-indigo-600">40ms</p><p class="text-slate-500 text-sm mt-1">Latency</p></div>
-    <div data-reveal><p class="text-4xl font-extrabold text-indigo-600">24/7</p><p class="text-slate-500 text-sm mt-1">Support</p></div>
-  </div>
-</section>
+    <!-- Centered Header -->
+    <div class="text-center mb-12">
+      <p class="text-neutral-600 dark:text-neutral-400 text-lg" data-animate="text">Trusted by industry leaders</p>
+    </div>
 
-<!-- Services -->
-<section id="services" class="px-6 py-20 bg-slate-50">
-  <div class="max-w-6xl mx-auto">
-    <h2 class="text-3xl font-extrabold text-center mb-12" data-reveal>Our Services</h2>
-    <div class="grid md:grid-cols-3 gap-6">
-      <div class="p-8 rounded-2xl bg-white shadow-sm" data-reveal><i class="fas fa-shield-halved text-2xl text-indigo-600"></i><h3 class="font-bold text-lg mt-4">Security</h3><p class="text-slate-500 mt-2 text-sm">RBAC, CSRF, JWT, rate-limiting out of the box.</p></div>
-      <div class="p-8 rounded-2xl bg-white shadow-sm" data-reveal><i class="fas fa-bolt text-2xl text-indigo-600"></i><h3 class="font-bold text-lg mt-4">Performance</h3><p class="text-slate-500 mt-2 text-sm">Async Rocket + SeaORM with pooling and caching.</p></div>
-      <div class="p-8 rounded-2xl bg-white shadow-sm" data-reveal><i class="fas fa-palette text-2xl text-indigo-600"></i><h3 class="font-bold text-lg mt-4">Theming</h3><p class="text-slate-500 mt-2 text-sm">9 palettes, switchable without a rebuild.</p></div>
+    <!-- Logo Row -->
+    <div class="flex flex-wrap justify-center items-center gap-x-12 gap-y-8">
+      <a data-motion="logo" href="#" class="text-neutral-400 dark:text-neutral-500 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+        <img src="https://raw.githubusercontent.com/gilbarbara/logos/main/logos/vmware.svg" alt="VMware" class="h-6 w-auto grayscale hover:grayscale-0 transition-all duration-300" />
+      </a>
+      <a data-motion="logo" href="#" class="text-neutral-400 dark:text-neutral-500 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+        <img src="https://raw.githubusercontent.com/gilbarbara/logos/main/logos/amd.svg" alt="AMD" class="h-6 w-auto grayscale hover:grayscale-0 transition-all duration-300" />
+      </a>
+      <a data-motion="logo" href="#" class="text-neutral-400 dark:text-neutral-500 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+        <img src="https://raw.githubusercontent.com/gilbarbara/logos/main/logos/qualcomm.svg" alt="Qualcomm" class="h-6 w-auto grayscale hover:grayscale-0 transition-all duration-300" />
+      </a>
+      <a data-motion="logo" href="#" class="text-neutral-400 dark:text-neutral-500 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+        <img src="https://raw.githubusercontent.com/gilbarbara/logos/main/logos/nvidia.svg" alt="Nvidia" class="h-6 w-auto grayscale hover:grayscale-0 transition-all duration-300" />
+      </a>
+      <a data-motion="logo" href="#" class="text-neutral-400 dark:text-neutral-500 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+        <img src="https://raw.githubusercontent.com/gilbarbara/logos/main/logos/paypal.svg" alt="PayPal" class="h-6 w-auto grayscale hover:grayscale-0 transition-all duration-300" />
+      </a>
     </div>
   </div>
 </section>
+<section id="_features_colorful_cards_v6_001" class="py-20 sm:py-24 bg-white dark:bg-neutral-950">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Magazine Layout -->
+    <div class="flex flex-col gap-16">
+      <!-- Header Row -->
+      <div class="grid lg:grid-cols-2 gap-12 items-end">
+        <div data-motion="hero">
+          <span data-motion="badge" class="text-orange-600 dark:text-orange-400 text-sm font-semibold tracking-wide uppercase mb-4 block">Workspace Tools</span>
+          <h2>
+            <span data-animate="heading" class="text-4xl sm:text-5xl lg:text-6xl font-bold text-neutral-900 dark:text-white leading-tight">Built for Modern Teams</span>
+          </h2>
+        </div>
+        <div data-motion="card" class="lg:text-right">
+          <p data-animate="text" class="text-lg text-neutral-600 dark:text-neutral-400 mb-6">
+            Streamline your daily workflow with intelligent tools designed to boost productivity and keep your team aligned.
+          </p>
+          <a data-motion="button" href="#" class="inline-flex items-center gap-2 px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-full transition-colors">
+            Get Started Free
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </a>
+        </div>
+      </div>
 
-<!-- Features -->
-<section id="features" class="px-6 py-20">
-  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-    <div data-reveal>
-      <h2 class="text-3xl font-extrabold mb-4">Everything you need</h2>
-      <ul class="space-y-3 text-slate-600">
-        <li><i class="fas fa-check text-green-500 mr-2"></i>Multi-database (SQLite / MySQL / Postgres)</li>
-        <li><i class="fas fa-check text-green-500 mr-2"></i>Route-driven permissions</li>
-        <li><i class="fas fa-check text-green-500 mr-2"></i>Rich-text + file manager</li>
-        <li><i class="fas fa-check text-green-500 mr-2"></i>Frontend template switcher</li>
-      </ul>
-    </div>
-    <div class="grid grid-cols-2 gap-4" data-reveal>
-      <div class="h-32 rounded-2xl bg-indigo-100"></div>
-      <div class="h-32 rounded-2xl bg-indigo-200 mt-6"></div>
-      <div class="h-32 rounded-2xl bg-indigo-200"></div>
-      <div class="h-32 rounded-2xl bg-indigo-100 mt-6"></div>
+      <!-- Feature Cards - Asymmetric Grid -->
+      <div class="grid lg:grid-cols-12 gap-6">
+        <!-- Large Card -->
+        <div data-motion="card" class="lg:col-span-5 p-8 bg-orange-50 dark:bg-orange-900/20 rounded-3xl flex flex-col gap-6">
+          <div data-motion="icon" class="w-14 h-14 bg-white dark:bg-neutral-800 rounded-2xl flex items-center justify-center">
+            <svg class="w-7 h-7 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold text-neutral-900 dark:text-white mb-3">Task Management</h3>
+            <p class="text-neutral-600 dark:text-neutral-400 leading-relaxed">Organize projects with intuitive boards, smart prioritization, and automated workflows that adapt to your team's needs.</p>
+          </div>
+          <div class="flex items-center gap-4 mt-auto pt-4">
+            <span class="text-3xl font-bold text-orange-600 dark:text-orange-400">2.5x</span>
+            <span class="text-sm text-neutral-600 dark:text-neutral-400">faster project delivery</span>
+          </div>
+        </div>
+
+        <!-- Right Column - Stacked Cards -->
+        <div class="lg:col-span-7 flex flex-col gap-6">
+          <!-- Top Row -->
+          <div class="grid sm:grid-cols-2 gap-6">
+            <div data-motion="card" class="p-6 bg-neutral-50 dark:bg-neutral-900 rounded-2xl flex flex-col gap-4">
+              <div data-motion="icon" class="w-12 h-12 bg-orange-100 dark:bg-orange-900/40 rounded-xl flex items-center justify-center">
+                <svg class="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                </svg>
+              </div>
+              <h3 class="text-lg font-semibold text-neutral-900 dark:text-white">Time Tracking</h3>
+              <p class="text-sm text-neutral-600 dark:text-neutral-400">Automatic time logs with detailed reports and insights.</p>
+            </div>
+
+            <div data-motion="card" class="p-6 bg-neutral-50 dark:bg-neutral-900 rounded-2xl flex flex-col gap-4">
+              <div data-motion="icon" class="w-12 h-12 bg-orange-100 dark:bg-orange-900/40 rounded-xl flex items-center justify-center">
+                <svg class="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"/>
+                </svg>
+              </div>
+              <h3 class="text-lg font-semibold text-neutral-900 dark:text-white">Team Sync</h3>
+              <p class="text-sm text-neutral-600 dark:text-neutral-400">Real-time collaboration with instant updates.</p>
+            </div>
+          </div>
+
+          <!-- Bottom Wide Card -->
+          <div data-motion="card" class="p-6 bg-neutral-50 dark:bg-neutral-900 rounded-2xl flex flex-col sm:flex-row gap-6 items-start">
+            <div data-motion="icon" class="w-12 h-12 bg-orange-100 dark:bg-orange-900/40 rounded-xl flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-2">Analytics Dashboard</h3>
+              <p class="text-sm text-neutral-600 dark:text-neutral-400">Visual dashboards to track progress, measure outcomes, and make data-driven decisions for your team.</p>
+            </div>
+            <a href="#" class="text-orange-600 dark:text-orange-400 font-medium text-sm hover:underline whitespace-nowrap">Learn more →</a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
-
-<!-- About / contact -->
-<section id="about" class="px-6 py-20 bg-slate-50">
-  <div class="max-w-4xl mx-auto text-center" data-reveal>
-    <h2 class="text-3xl font-extrabold mb-4">Get in touch</h2>
-    <div id="contact" class="flex flex-col md:flex-row gap-6 justify-center mt-8 text-slate-600">
-      {% if setting.email %}<span><i class="fas fa-envelope text-indigo-600 mr-2"></i>{{ setting.email }}</span>{% endif %}
-      {% if setting.phone %}<span><i class="fas fa-phone text-indigo-600 mr-2"></i>{{ setting.phone }}</span>{% endif %}
-      {% if setting.address %}<span><i class="fas fa-location-dot text-indigo-600 mr-2"></i>{{ setting.address }}</span>{% endif %}
+<section id="_gallery_masonry_grid_v6_001" class="py-20 sm:py-24 bg-neutral-50 dark:bg-neutral-900">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-16">
+      <div data-motion="header" class="max-w-xl">
+        <span data-motion="badge" class="inline-flex items-center gap-2 px-4 py-1.5 bg-orange-100 dark:bg-orange-900/40 rounded-full text-orange-600 dark:text-orange-400 text-sm font-medium mb-4">
+          <span class="w-1.5 h-1.5 bg-orange-500 rounded-full"></span>
+          Gallery
+        </span>
+        <h2 class="text-4xl sm:text-5xl font-bold text-neutral-900 dark:text-white">
+          <span data-animate="heading">Moments Captured</span>
+        </h2>
+        <p data-animate="text" class="text-lg text-neutral-600 dark:text-neutral-400 mt-4">A collection of extraordinary moments frozen in time, each telling its own unique story.</p>
+      </div>
+      <a data-motion="link" href="#" class="inline-flex items-center gap-2 text-orange-600 dark:text-orange-400 font-semibold hover:gap-3 transition-all w-fit">
+        View Full Gallery
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
+      </a>
     </div>
-    <a href="/auth/login" class="inline-block mt-10 px-8 py-3 rounded-lg bg-indigo-600 text-white font-medium">Open the dashboard</a>
+
+    <!-- Masonry Grid -->
+    <div class="grid md:grid-cols-12 gap-5">
+      <!-- Large Featured Image -->
+      <div data-motion="image" class="md:col-span-7 md:row-span-2 group">
+        <div class="relative h-full min-h-[400px] md:min-h-[600px] rounded-3xl overflow-hidden">
+          <img data-motion="image" src="https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?w=1200&auto=format&fit=crop&q=80" alt="Mountain landscape" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+          <div class="absolute inset-0 bg-linear-to-t from-neutral-900/60 via-transparent to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-8">
+            <span data-motion="badge" class="inline-block px-3 py-1 bg-orange-500 text-white text-xs font-medium rounded-full mb-3">Featured</span>
+            <h3 class="text-2xl font-bold text-white">Alpine Wilderness</h3>
+            <p class="text-neutral-300 mt-1">Dolomites, Italy</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Right Image -->
+      <div data-motion="image" class="md:col-span-5 group">
+        <div class="relative h-64 md:h-[290px] rounded-3xl overflow-hidden">
+          <img data-motion="image" src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&auto=format&fit=crop&q=80" alt="Lake reflection" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+          <div class="absolute inset-0 bg-linear-to-t from-neutral-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <h3 class="text-lg font-semibold text-white">Mirror Lake</h3>
+            <p class="text-neutral-300 text-sm">New Zealand</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Right Image -->
+      <div data-motion="image" class="md:col-span-5 group">
+        <div class="relative h-64 md:h-[290px] rounded-3xl overflow-hidden">
+          <img data-motion="image" src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=800&auto=format&fit=crop&q=80" alt="Foggy forest" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+          <div class="absolute inset-0 bg-linear-to-t from-neutral-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <h3 class="text-lg font-semibold text-white">Misty Forest</h3>
+            <p class="text-neutral-300 text-sm">Pacific Northwest</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Row - 3 Images -->
+      <div data-motion="image" class="md:col-span-4 group">
+        <div class="relative h-64 rounded-3xl overflow-hidden">
+          <img data-motion="image" src="https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=600&auto=format&fit=crop&q=80" alt="Waterfall" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+          <div class="absolute inset-0 bg-linear-to-t from-neutral-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <h3 class="text-base font-semibold text-white">Hidden Falls</h3>
+          </div>
+        </div>
+      </div>
+
+      <div data-motion="image" class="md:col-span-4 group">
+        <div class="relative h-64 rounded-3xl overflow-hidden">
+          <img data-motion="image" src="https://images.unsplash.com/photo-1505765050516-f72dcac9c60e?w=600&auto=format&fit=crop&q=80" alt="Autumn forest" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+          <div class="absolute inset-0 bg-linear-to-t from-neutral-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <h3 class="text-base font-semibold text-white">Autumn Colors</h3>
+          </div>
+        </div>
+      </div>
+
+      <div data-motion="image" class="md:col-span-4 group">
+        <div class="relative h-64 rounded-3xl overflow-hidden">
+          <img data-motion="image" src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&auto=format&fit=crop&q=80" alt="Mountain peak" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+          <div class="absolute inset-0 bg-linear-to-t from-neutral-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div class="absolute bottom-0 left-0 right-0 p-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <h3 class="text-base font-semibold text-white">Summit View</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="_about_bento_cards_v6_001" class="py-20 sm:py-24 bg-white dark:bg-neutral-950">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Magazine-style Header -->
+    <div class="grid lg:grid-cols-12 gap-8 lg:gap-12 items-end mb-16">
+      <div class="lg:col-span-7">
+        <span data-motion="badge" class="text-orange-600 dark:text-orange-400 text-sm font-semibold tracking-wide uppercase block mb-4">About Us</span>
+        <h2 class="text-neutral-900 dark:text-white text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.1]">
+          <span data-animate="heading">Building Digital Excellence</span>
+        </h2>
+      </div>
+      <div class="lg:col-span-5">
+        <p class="text-neutral-600 dark:text-neutral-400 text-lg leading-relaxed" data-animate="text">
+          We craft digital experiences that transform businesses. Our approach combines strategic thinking with creative execution.
+        </p>
+      </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid lg:grid-cols-3 gap-6">
+
+      <!-- Large Image with Floating Card -->
+      <div data-motion="image" class="lg:col-span-2 relative h-[400px] lg:h-[500px] rounded-3xl overflow-hidden">
+        <img data-motion="image"
+          src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&auto=format&fit=crop&q=80"
+          alt="Team collaboration"
+          class="w-full h-full object-cover"
+        >
+        <div class="absolute bottom-6 left-6 right-6 p-6 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-xs rounded-2xl">
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="text-orange-600 dark:text-orange-400 text-3xl font-bold block">Since 2015</span>
+              <span class="text-neutral-500 dark:text-neutral-400 text-sm">Crafting excellence</span>
+            </div>
+            <a data-motion="button" href="#" class="inline-flex items-center gap-2 text-orange-600 dark:text-orange-400 font-semibold hover:gap-3 transition-all duration-300">
+              Our Story
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Column -->
+      <div class="flex flex-col gap-6">
+        <div data-motion="card" class="p-6 border-orange-500 bg-neutral-50 dark:bg-neutral-900 rounded-r-2xl">
+          <span class="text-orange-600 dark:text-orange-400 text-4xl font-bold block">250+</span>
+          <span class="text-neutral-600 dark:text-neutral-400 text-base">Projects Delivered</span>
+        </div>
+        <div data-motion="card" class="p-6 border-orange-500 bg-neutral-50 dark:bg-neutral-900 rounded-r-2xl">
+          <span class="text-orange-600 dark:text-orange-400 text-4xl font-bold block">98%</span>
+          <span class="text-neutral-600 dark:text-neutral-400 text-base">Client Satisfaction</span>
+        </div>
+        <div data-motion="card" class="p-6 border-orange-500 bg-neutral-50 dark:bg-neutral-900 rounded-r-2xl">
+          <span class="text-orange-600 dark:text-orange-400 text-4xl font-bold block">45+</span>
+          <span class="text-neutral-600 dark:text-neutral-400 text-base">Team Members</span>
+        </div>
+        <div data-motion="card" class="flex-1 p-6 bg-orange-50 dark:bg-orange-900/20 rounded-2xl flex flex-col justify-center">
+          <h3 class="text-neutral-900 dark:text-white text-xl font-bold mb-2">Our Mission</h3>
+          <p class="text-neutral-600 dark:text-neutral-400 text-sm">Empowering businesses through innovative digital solutions.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Divider -->
+    <div class="w-full h-px bg-neutral-200 dark:bg-neutral-800 mt-16"></div>
+  </div>
+</section>
+<section id="_testimonial_bento_video_cards_t15_001" class="py-20 sm:py-24 bg-white dark:bg-neutral-950">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Header -->
+    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-12">
+      <div>
+        <span data-motion="badge" class="text-orange-600 dark:text-orange-400 text-sm font-semibold tracking-wide uppercase mb-3 block">Video Stories</span>
+        <h2 class="text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-white">
+          <span data-animate="heading">Watch their success stories</span>
+        </h2>
+      </div>
+      <p class="text-neutral-600 dark:text-neutral-400 max-w-md lg:text-right" data-animate="text">
+        Hear directly from leaders who transformed their organizations with our platform.
+      </p>
+    </div>
+
+    <!-- Bento Grid -->
+    <div class="grid lg:grid-cols-3 gap-5">
+
+      <!-- Large Featured Card -->
+      <div class="lg:col-span-2 lg:row-span-2">
+        <div data-motion="card" class="group relative h-full min-h-[400px] lg:min-h-[500px] rounded-3xl overflow-hidden">
+          <img data-motion="image"
+            src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=900&auto=format&fit=crop&q=80"
+            alt="James Wilson"
+            class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          >
+          <div class="absolute inset-0 bg-linear-to-t from-neutral-900/90 via-neutral-900/40 to-transparent"></div>
+          <div class="absolute inset-0 flex flex-col justify-between p-6 sm:p-8">
+            <!-- Play Button -->
+            <div class="flex justify-end">
+              <button data-motion="button" type="button" class="w-14 h-14 rounded-full bg-orange-500 flex items-center justify-center hover:bg-orange-600 transition-colors group/btn" aria-label="Play video">
+                <svg class="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              </button>
+            </div>
+            <!-- Content -->
+            <div>
+              <p class="text-white text-lg sm:text-xl font-medium leading-relaxed mb-6 max-w-lg">
+                "This platform revolutionized how we approach product development. The collaboration features alone saved us countless hours."
+              </p>
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center text-white font-bold">JW</div>
+                <div>
+                  <h4 class="text-white font-semibold">James Wilson</h4>
+                  <p class="text-orange-300 text-sm">CTO, TechFlow Inc</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Small Card 1 -->
+      <div data-motion="card" class="group relative min-h-[240px] rounded-3xl overflow-hidden">
+        <img data-motion="image"
+          src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&auto=format&fit=crop&q=80"
+          alt="Elena Rodriguez"
+          class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+        >
+        <div class="absolute inset-0 bg-linear-to-t from-neutral-900/90 via-neutral-900/30 to-transparent"></div>
+        <div class="absolute inset-0 flex flex-col justify-between p-5">
+          <div class="flex justify-end">
+            <button type="button" class="w-10 h-10 rounded-full bg-white/20 backdrop-blur-xs flex items-center justify-center hover:bg-white/30 transition-colors" aria-label="Play video">
+              <svg class="w-4 h-4 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </button>
+          </div>
+          <div>
+            <h4 class="text-white font-semibold">Elena Rodriguez</h4>
+            <p class="text-neutral-300 text-sm">VP Operations, Nexus</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Small Card 2 -->
+      <div data-motion="card" class="group relative min-h-[240px] rounded-3xl overflow-hidden">
+        <img data-motion="image"
+          src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&auto=format&fit=crop&q=80"
+          alt="Michael Chang"
+          class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+        >
+        <div class="absolute inset-0 bg-linear-to-t from-neutral-900/90 via-neutral-900/30 to-transparent"></div>
+        <div class="absolute inset-0 flex flex-col justify-between p-5">
+          <div class="flex justify-end">
+            <button type="button" class="w-10 h-10 rounded-full bg-white/20 backdrop-blur-xs flex items-center justify-center hover:bg-white/30 transition-colors" aria-label="Play video">
+              <svg class="w-4 h-4 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </button>
+          </div>
+          <div>
+            <h4 class="text-white font-semibold">Michael Chang</h4>
+            <p class="text-neutral-300 text-sm">Director, Scale Ventures</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Stats Row -->
+    <div data-motion="stats" class="grid grid-cols-3 gap-8 mt-12 pt-12 border-t border-neutral-200 dark:border-neutral-800">
+      <div class="text-center">
+        <span class="text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-white block">50+</span>
+        <span class="text-sm text-neutral-500 dark:text-neutral-400">Video Stories</span>
+      </div>
+      <div class="text-center">
+        <span class="text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-white block">4.9</span>
+        <span class="text-sm text-neutral-500 dark:text-neutral-400">Average Rating</span>
+      </div>
+      <div class="text-center">
+        <span class="text-3xl sm:text-4xl font-bold text-neutral-900 dark:text-white block">98%</span>
+        <span class="text-sm text-neutral-500 dark:text-neutral-400">Would Recommend</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+<section id="_cta_card_rating_image_v6_001" class="py-20 sm:py-24 bg-white dark:bg-neutral-950">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Stacked Layout with Overlapping Elements -->
+    <div class="relative">
+
+      <!-- Background Image -->
+      <div class="relative h-80 sm:h-96 rounded-3xl overflow-hidden" data-motion="image">
+        <img data-motion="image" src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&auto=format&fit=crop&q=80" alt="Online learning" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-linear-to-r from-orange-900/80 to-orange-600/60"></div>
+
+        <!-- Floating Rating Badge -->
+        <div class="absolute top-6 right-6 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-xs px-4 py-2 rounded-full flex items-center gap-2" data-motion="badge">
+          <div class="flex items-center gap-0.5 text-orange-400">
+            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          </div>
+          <span class="text-neutral-900 dark:text-white font-semibold text-sm">4.9</span>
+        </div>
+
+        <!-- Overlay Content -->
+        <div class="absolute inset-0 flex items-center justify-center text-center px-6">
+          <div data-motion="hero">
+            <span class="text-orange-200 text-sm font-semibold tracking-wide uppercase" data-motion="badge">Premium Learning</span>
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mt-4 max-w-2xl">
+              <span data-animate="heading">Master New Skills with Expert-Led Courses</span>
+            </h2>
+          </div>
+        </div>
+      </div>
+
+      <!-- Overlapping Form Card -->
+      <div class="relative -mt-16 mx-4 sm:mx-8 lg:mx-16">
+        <div class="bg-white dark:bg-neutral-900 rounded-2xl p-6 sm:p-8" data-motion="card">
+          <div class="flex flex-col lg:flex-row lg:items-center gap-6">
+
+            <!-- Form -->
+            <div class="flex-1 flex flex-col sm:flex-row gap-3">
+              <input data-motion="input" type="email" placeholder="Enter your email address" class="flex-1 px-5 py-3.5 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-hidden focus:ring-2 focus:ring-orange-500">
+              <button data-motion="button" type="button" class="px-8 py-3.5 bg-orange-600 hover:bg-orange-700 rounded-xl text-white font-semibold transition-colors whitespace-nowrap">
+                Get Free Access
+              </button>
+            </div>
+
+            <!-- Social Proof -->
+            <div class="flex items-center gap-4 lg:pl-6 lg: border-neutral-200 dark:border-neutral-700" data-motion="social-proof">
+              <div class="flex -space-x-2">
+                <img data-motion="avatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80" alt="Student" class="w-8 h-8 rounded-full border-2 border-white dark:border-neutral-900 object-cover">
+                <img data-motion="avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" alt="Student" class="w-8 h-8 rounded-full border-2 border-white dark:border-neutral-900 object-cover">
+                <img data-motion="avatar" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&auto=format&fit=crop&q=80" alt="Student" class="w-8 h-8 rounded-full border-2 border-white dark:border-neutral-900 object-cover">
+              </div>
+              <div class="text-sm">
+                <span class="text-neutral-900 dark:text-white font-semibold">15,000+</span>
+                <span class="text-neutral-500 dark:text-neutral-400"> students enrolled</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
 </section>
 {% endblock content %}

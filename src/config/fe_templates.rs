@@ -41,15 +41,25 @@ impl FeTemplate {
     }
 }
 
-/// Curated fallback catalog (subset). The full list is fetched live in Phase 7.
+/// Curated fallback catalog (15 slugs, identical to NodeAdmin FE_TEMPLATES /
+/// GoAdmin `curated`; default first) — used when the live opentailwind fetch fails.
 pub fn curated() -> Vec<FeTemplate> {
     [
         DEFAULT_FE_TEMPLATE,
-        "agency-consulting-001-modern-agency",
-        "saas-software-003-cloud-platform",
-        "ecommerce-shop-004-fashion-store",
-        "portfolio-personal-005-designer",
-        "startup-landing-006-launch",
+        "agency-consulting-001-digital-marketing-agency",
+        "technology-saas-001-hero-focused-conversion-page",
+        "technology-saas-002-feature-rich-multi-section",
+        "ecommerce-retail-001-fashion-boutique",
+        "ecommerce-retail-002-luxury-fashion-brand",
+        "portfolio-creative-001-creative-portfolio",
+        "portfolio-creative-002-minimal-portfolio",
+        "professional-services-001-law-firm",
+        "real-estate-property-001-real-estate-agency",
+        "food-hospitality-001-fine-dining-restaurant",
+        "healthcare-wellness-001-family-doctor-clinic",
+        "education-training-001-private-school",
+        "fitness-sports-001-fitness-center",
+        "travel-tourism-001-travel-agency",
     ]
     .iter()
     .filter_map(|s| FeTemplate::from_slug(s))

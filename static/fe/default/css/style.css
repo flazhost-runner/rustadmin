@@ -1,11 +1,7 @@
-/* RustAdmin fe/default landing — reveal-on-scroll + small polish. */
-[data-reveal] {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity .6s ease, transform .6s ease;
-}
-[data-reveal].is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-html { scroll-behavior: smooth; }
+/* Diekstrak dari template default opentailwind (agency-002). */
+    * { font-family: 'Inter', sans-serif; }
+    [data-motion] { opacity: 0; }
+    [data-animate] { opacity: 0; }
+ /* Notification dropdown - hidden by default, shown when active */
+ .notification-dropdown { display: none; }
+ .notification-dropdown.active { display: block; }

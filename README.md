@@ -32,7 +32,7 @@ cargo run --bin migrate up
 
 # 3. run (Full = UI + API)
 APP_MODE=full cargo run
-#   → http://127.0.0.1:8000  (landing)
+#   → http://127.0.0.1:3000  (landing — APP_PORT)
 #   → /auth/login            (admin@admin.com / 12345678)
 
 # API-only

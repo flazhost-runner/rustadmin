@@ -29,10 +29,18 @@ async fn landing_renders_bound_to_setting() {
     assert_eq!(res.content_type(), Some(ContentType::HTML));
     let body = res.into_string().await.unwrap();
     assert!(body.contains("RustAdmin"));
-    assert!(body.contains("Sign in"));
+    // canonical v6 landing markers (parity NodeAdmin/GoAdmin bundled default)
     assert!(
-        body.contains("data-reveal"),
-        "rich landing sections present"
+        body.contains("_hero_digital_agency_v6_001"),
+        "v6 hero section present"
+    );
+    assert!(
+        body.contains("_footer_dark_subscribe_v6_001"),
+        "v6 footer present"
+    );
+    assert!(
+        body.contains("data-motion"),
+        "motion animation hooks present"
     );
 }
 
