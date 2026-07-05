@@ -112,11 +112,15 @@ fn assemble(cfg: Config, db: Option<DatabaseConnection>) -> Rocket<Build> {
 
     // Resolve the template dir absolutely so the app runs from ANY working directory
     // (rocket_dyn_templates defaults to a CWD-relative "templates"). Static/storage dirs are
-    // resolved the same way below via `config::asset`.
-    let figment = rocket::Config::figment().merge((
-        "template_dir",
-        config::asset("templates").to_string_lossy().to_string(),
-    ));
+    // resolved the same way below via `config::asset`. The listen port comes from the app
+    // config (`APP_PORT`, with `ROCKET_PORT` as override — see `config::bind_port`); without
+    // this merge Rocket would ignore `APP_PORT` and bind its own default 8000.
+    let figment = rocket::Config::figment()
+        .merge(("port", config::bind_port(cfg.app.port)))
+        .merge((
+            "template_dir",
+            config::asset("templates").to_string_lossy().to_string(),
+        ));
 
     // DI container ≈ Rocket managed state. Services are shared as trait objects.
     let token_store: Arc<dyn TokenStore> = Arc::new(InMemoryTokenStore::new());

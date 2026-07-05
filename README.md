@@ -46,15 +46,13 @@ Read **only** via `src/config/env.rs` (modules never touch the environment). Key
 | Var | Default | Notes |
 |-----|---------|-------|
 | `APP_MODE` | `full` | `full` (UI+API) or `api` |
-| `APP_PORT` | `3000`* | Rocket also honors `ROCKET_PORT` (default 8000) |
+| `APP_PORT` | `3000` | the port the server binds; `ROCKET_PORT` overrides it when set |
 | `DB_TYPE` | `sqlite` | `sqlite` \| `mysql` \| `postgres` |
 | `DATABASE_URL` | — | overrides DB parts if set |
 | `DB_HOST/PORT/USERNAME/PASSWORD/DATABASE` | — | when not using `DATABASE_URL` |
 | `SESSION_SECRET` / `JWT_SECRET` | — | **required in production** (fail-fast) |
 | `BCRYPT_ROUNDS` | `10` | |
 | `REDIS_URL`, `MAIL_*`, `OSS_*` | — | optional |
-
-\* Validated config mirrors NodeAdmin var names; the bound port is Rocket's (`ROCKET_PORT`/8000 by default).
 
 ## Multi-database
 

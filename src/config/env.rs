@@ -32,6 +32,16 @@ pub fn storage_base_path() -> String {
     get("STORAGE_BASE_PATH", "storage")
 }
 
+/// The port Rocket actually binds (merged into the figment by `build_rocket`).
+///
+/// `APP_PORT` is authoritative — parity with NodeAdmin/GoAdmin, which listen directly on
+/// `APP_PORT`. `ROCKET_PORT` stays a framework-native escape hatch that wins when set
+/// (container entrypoints exported it before `APP_PORT` was honored; keeps old deploys
+/// working). Without it, Rocket ignored `APP_PORT` and fell back to its own default 8000.
+pub fn bind_port(app_port: u16) -> u16 {
+    num("ROCKET_PORT", app_port)
+}
+
 /// Application run mode. `Full` = web UI + REST API; `Api` = REST API only (stateless).
 /// Selected at runtime via `APP_MODE` so a single codebase serves both variants.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -286,6 +296,17 @@ fn parse_duration_secs(s: &str) -> Option<i64> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn bind_port_prefers_rocket_port_env() {
+        // No ROCKET_PORT → APP_PORT value is authoritative.
+        env::remove_var("ROCKET_PORT");
+        assert_eq!(bind_port(9000), 9000);
+        // ROCKET_PORT set → framework escape hatch wins (old container entrypoints).
+        env::set_var("ROCKET_PORT", "8081");
+        assert_eq!(bind_port(9000), 8081);
+        env::remove_var("ROCKET_PORT");
+    }
 
     #[test]
     fn parses_durations() {
