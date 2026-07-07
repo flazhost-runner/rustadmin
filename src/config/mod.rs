@@ -8,7 +8,10 @@
 pub mod app;
 pub mod env;
 pub mod fe_templates;
+pub mod storage;
 pub mod themes;
 
-pub use env::{app_root, asset, bind_port, storage_base_path, AppMode, Config};
+pub use env::{
+    app_root, asset, bind_port, storage, storage_base_path, AppMode, Config, StorageConfig,
+};
 pub use themes::{Theme, DEFAULT_THEME, THEMES, THEME_NAMES};

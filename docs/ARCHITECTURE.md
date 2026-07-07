@@ -55,7 +55,7 @@ selects Full vs API-only at runtime. DB is dialect-agnostic (`src/db.rs` + SeaOR
 - Web session = encrypted cookie (stateless → horizontal scaling, no sticky sessions).
 - JWT blacklist + rate-limit = `TokenStore` (in-memory default; Redis pluggable).
 - Site setting (theme + fields) cached globally (`src/site.rs`), primed at liftoff, invalidated on save.
-- Files = `storage/` (local) served at `/storage`; OSS/S3 pluggable.
+- Files = driver-aware storage (`src/config/storage.rs`): `local` served at `/storage` (path-decoupled prefix, mounted only for the local driver), `oss`/`s3` return absolute SigV4 presigned URLs. DB stores object keys; switching is `.env`-only. See **[Storage & switching backends](../README.md#storage--switching-backends)**.
 
 ## Frontend template (landing)
 

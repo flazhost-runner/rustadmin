@@ -210,11 +210,19 @@ fn assemble(cfg: Config, db: Option<DatabaseConnection>) -> Rocket<Build> {
                 "/static",
                 FileServer::from(config::asset("static")).rank(11),
             )
-            .mount(
-                "/storage",
-                FileServer::from(config::asset("storage")).rank(12),
-            )
             .attach(helpers::view::template_fairing());
+
+        // Local storage: serve the upload dir at the stable, path-decoupled prefix
+        // (`/storage/<key>`). Registered only for the `local` driver — `oss`/`s3` render
+        // absolute presigned URLs and need no local mount. `local_storage_dir()` resolves
+        // `STORAGE_BASE_PATH` (absolute-aware), so the URL stays valid even when the base
+        // path is absolute (e.g. `/app/storage`).
+        if config::storage::is_local() {
+            rocket = rocket.mount(
+                config::storage::LOCAL_URL_PREFIX,
+                FileServer::from(config::storage::local_storage_dir()).rank(12),
+            );
+        }
     }
 
     rocket

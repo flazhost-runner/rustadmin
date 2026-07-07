@@ -272,7 +272,7 @@ async fn upload_picture(file: Option<TempFile<'_>>) -> Result<Option<String>, Ap
         .read_to_end(&mut bytes)
         .await
         .map_err(|e| AppError::internal(format!("read upload: {e}")))?;
-    let data = crate::modules::media::service::upload(&bytes)?;
+    let data = crate::modules::media::service::upload(&bytes).await?;
     Ok(data.get("url").and_then(|u| u.as_str()).map(str::to_string))
 }
 

@@ -52,12 +52,56 @@ Read **only** via `src/config/env.rs` (modules never touch the environment). Key
 | `DB_HOST/PORT/USERNAME/PASSWORD/DATABASE` | — | when not using `DATABASE_URL` |
 | `SESSION_SECRET` / `JWT_SECRET` | — | **required in production** (fail-fast) |
 | `BCRYPT_ROUNDS` | `10` | |
-| `REDIS_URL`, `MAIL_*`, `OSS_*` | — | optional |
+| `STORAGE_DRIVER` | `local` | `local` \| `oss` \| `s3` — see [Storage & switching backends](#storage--switching-backends) |
+| `STORAGE_BASE_PATH` | `storage` | local upload dir (absolute-aware, e.g. `/app/storage`) |
+| `REDIS_URL`, `MAIL_*`, `STORAGE_*` (cloud) | — | optional |
 
 ## Multi-database
 
 The same migrations + entities run on SQLite/MySQL/Postgres (portable SeaORM types). Tests use
 SQLite in-memory; CI also runs the MySQL + Postgres matrix.
+
+## Storage & switching backends
+
+Uploads (rich-text editor images, user avatars) go through a single driver-aware storage
+layer ([`src/config/storage.rs`](src/config/storage.rs)). The database stores only the object
+**key** (e.g. `editor/<uuid>.png`); the render URL is derived from the key at read time.
+Switching backends is a **`.env`-only** change (`STORAGE_DRIVER`) plus a restart — no code or
+view edits.
+
+| Driver | Where files live | Render URL | Config |
+|--------|------------------|-----------|--------|
+| `local` (default) | `STORAGE_BASE_PATH/<key>` on disk | `/storage/<key>` — a stable prefix served by a Rocket `FileServer`, **decoupled** from the filesystem path (an absolute `STORAGE_BASE_PATH` like `/app/storage` still yields `/storage/...`, never `//app/...`) | `STORAGE_BASE_PATH` |
+| `oss` | Alibaba OSS bucket (S3-compatible endpoint) | absolute **presigned** `GET` URL (AWS-SigV4, 1 h TTL) | `STORAGE_ACCESS_KEY_ID`, `STORAGE_SECRET_ACCESS_KEY`, `STORAGE_ENDPOINT`, `STORAGE_BUCKET`, `STORAGE_REGION`, `STORAGE_SSL` |
+| `s3` | AWS S3 / S3-compatible (MinIO, R2, B2) | absolute **presigned** `GET` URL (AWS-SigV4, 1 h TTL) | same as `oss`; `STORAGE_ENDPOINT` optional (path-style when set) |
+
+The `local` `FileServer` is mounted at `/storage` **only when `STORAGE_DRIVER=local`**; the
+cloud drivers need no local mount. Presigning is dependency-free (no cloud SDK) — an inline
+SigV4 implementation, so both `oss` and `s3` are addressed through their S3-compatible endpoint.
+
+### Switching from local to a bucket (migration caveat)
+
+The DB stores keys, not full URLs, so existing rows keep working after a switch — **but the
+bytes must already exist under the same keys in the bucket**. Copy the local upload dir into the
+bucket preserving the key layout *before* flipping the driver:
+
+```bash
+# AWS S3 / S3-compatible — keys are the paths under STORAGE_BASE_PATH (e.g. editor/<uuid>.png)
+aws s3 sync ./storage/ s3://my-bucket/
+# Alibaba OSS
+ossutil cp -r ./storage/ oss://my-bucket/
+```
+
+Then set `STORAGE_DRIVER=s3` (or `oss`) + the cloud credentials in `.env` and restart.
+
+### Local storage in production
+
+`local` works in production but writes to the container filesystem, which is **ephemeral** —
+uploads vanish on redeploy/restart and are not shared across replicas. For a durable local
+setup, mount a **persistent volume** at `STORAGE_BASE_PATH` (set it to an absolute path such as
+`STORAGE_BASE_PATH=/app/storage` and mount the volume there — the render URL stays `/storage/...`
+regardless). Uploaded content is **git-ignored** (`/storage/*`, with `storage/.gitkeep` keeping
+the dir tracked), so nothing under it is committed. For horizontal scaling prefer `oss`/`s3`.
 
 ## Testing
 
@@ -92,4 +136,5 @@ cargo run --bin migrate <up|down|fresh|refresh|status>
 Build `cargo build --release`, set `SESSION_SECRET` + `JWT_SECRET` + `DB_*` (or `DATABASE_URL`),
 run migrations, then run the binary behind a reverse proxy (TLS terminates there; secure cookies
 auto-enable in production). Stateless (session in cookie, files in external storage) → horizontal
-scaling.
+scaling. For file uploads pick a backend via [Storage & switching backends](#storage--switching-backends)
+(use `oss`/`s3` for multi-replica; for `local` mount a persistent volume at `STORAGE_BASE_PATH`).

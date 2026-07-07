@@ -143,6 +143,7 @@ pub struct MailConfig {
 
 #[derive(Debug, Clone)]
 pub struct StorageConfig {
+    /// `local` (default) | `oss` | `s3`. Switching driver needs ONLY a `.env` change.
     pub driver: String,
     pub base_path: String,
     pub access_key_id: String,
@@ -151,6 +152,29 @@ pub struct StorageConfig {
     pub bucket: String,
     pub region: String,
     pub ssl: bool,
+}
+
+impl StorageConfig {
+    /// Read the storage configuration from the environment (env names kept identical to
+    /// NodeAdmin for parity). Lives in `config` so modules never touch the environment.
+    pub fn from_env() -> Self {
+        StorageConfig {
+            driver: get("STORAGE_DRIVER", "local"),
+            base_path: get("STORAGE_BASE_PATH", "storage"),
+            access_key_id: get("STORAGE_ACCESS_KEY_ID", ""),
+            secret_access_key: get("STORAGE_SECRET_ACCESS_KEY", ""),
+            endpoint: get("STORAGE_ENDPOINT", ""),
+            bucket: get("STORAGE_BUCKET", ""),
+            region: get("STORAGE_REGION", ""),
+            ssl: boolean("STORAGE_SSL", true),
+        }
+    }
+}
+
+/// Storage configuration accessor (mirrors [`storage_base_path`]). Modules must use this
+/// instead of reading the environment directly (checker-enforced).
+pub fn storage() -> StorageConfig {
+    StorageConfig::from_env()
 }
 
 /// Root configuration. Built once via [`Config::from_env`] and shared as Rocket managed
@@ -226,16 +250,7 @@ impl Config {
                 from_name: get("MAIL_FROM_NAME", "RustAdmin"),
                 from_address: get("MAIL_FROM_ADDRESS", "no-reply@example.com"),
             },
-            storage: StorageConfig {
-                driver: get("STORAGE_DRIVER", "local"),
-                base_path: get("STORAGE_BASE_PATH", "storage"),
-                access_key_id: get("STORAGE_ACCESS_KEY_ID", ""),
-                secret_access_key: get("STORAGE_SECRET_ACCESS_KEY", ""),
-                endpoint: get("STORAGE_ENDPOINT", ""),
-                bucket: get("STORAGE_BUCKET", ""),
-                region: get("STORAGE_REGION", ""),
-                ssl: boolean("STORAGE_SSL", true),
-            },
+            storage: StorageConfig::from_env(),
             default_page_size: num("DEFAULT_PAGE_SIZE", 10),
             administrator_role: get("ADMINISTRATOR_ROLE", "Administrator"),
             node_env,

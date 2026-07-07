@@ -26,7 +26,7 @@ pub struct DeleteBody {
 
 #[get("/media/list")]
 pub async fn list(_user: CurrentUser) -> ApiResult {
-    let items = service::list()?;
+    let items = service::list().await?;
     Ok((
         Status::Ok,
         Json(json!({ "status": true, "message": "OK", "data": items })),
@@ -53,7 +53,7 @@ pub async fn upload(
     if bytes.len() > MAX_SIZE {
         return Err(AppError::bad_request("File size exceeds 2MB limit."));
     }
-    let data = service::upload(&bytes)?;
+    let data = service::upload(&bytes).await?;
     Ok((
         Status::Ok,
         Json(json!({ "status": true, "message": "OK", "data": data })),
@@ -64,7 +64,7 @@ pub async fn upload(
 // `$.ajax({ data: { key } })` default content-type; CSRF still arrives via header.
 #[post("/media/delete", data = "<body>")]
 pub async fn delete(_user: CurrentUser, _csrf: CsrfProtected, body: Form<DeleteBody>) -> ApiResult {
-    service::delete(&body.key)?;
+    service::delete(&body.key).await?;
     Ok((
         Status::Ok,
         Json(json!({ "status": true, "message": "Deleted", "data": null })),
