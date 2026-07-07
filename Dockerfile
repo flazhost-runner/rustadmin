@@ -1,14 +1,17 @@
 # ── RustAdmin starter kit · FlazHost PaaS (CapRover) ────────────────────────
 # Multi-stage build. SQLite comes from sqlx/libsqlite3-sys (bundled C, compiled
-# in-tree) and all TLS is rustls — no OpenSSL, so a musl/alpine build yields a
-# fully static binary that runs on a bare alpine runtime.
+# in-tree). Outbound HTTP TLS (reqwest) is rustls; the DB driver (sea-orm/sqlx)
+# uses native-tls with OpenSSL VENDORED (built statically from source) because the
+# managed MySQL only offers legacy TLS1.2 ciphers that rustls rejects. Vendored
+# OpenSSL keeps the musl/alpine build a fully static binary on a bare alpine runtime.
 
 # 1) Build stage
 FROM rust:1-alpine AS build
 WORKDIR /src
 
-# C toolchain for the bundled sqlite3 (libsqlite3-sys) and ring (rustls).
-RUN apk add --no-cache build-base
+# C toolchain for the bundled sqlite3 (libsqlite3-sys); perl + linux-headers are
+# required to compile vendored OpenSSL (native-tls DB backend) from source on musl.
+RUN apk add --no-cache build-base perl linux-headers
 
 # Layer-cache the (long) dependency compile: build a dummy skeleton against the
 # real Cargo.toml/Cargo.lock first, so source edits don't recompile all deps.
