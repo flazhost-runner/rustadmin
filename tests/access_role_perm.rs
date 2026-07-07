@@ -200,3 +200,33 @@ async fn api_role_and_permission_list() {
         "paginate_data present"
     );
 }
+
+// Parity with the NodeAdmin fix: `edit` on a missing id must 404 (canonical envelope) for both
+// role and permission, never 200 with an empty body.
+#[tokio::test]
+async fn api_edit_missing_id_returns_404() {
+    let (client, _db, _admin, _role) = setup().await;
+    let res = client
+        .post("/api/v1/auth/login")
+        .header(ContentType::JSON)
+        .body(r#"{"email":"admin@admin.com","password":"12345678"}"#)
+        .dispatch()
+        .await;
+    let token = res.into_json::<serde_json::Value>().await.unwrap()["data"]["token"]
+        .as_str()
+        .unwrap()
+        .to_string();
+    let bearer = Header::new("Authorization", format!("Bearer {token}"));
+
+    let missing = "00000000-0000-0000-0000-000000000000";
+    for resource in ["role", "permission"] {
+        let res = client
+            .get(format!("/api/v1/access/{resource}/{missing}/edit"))
+            .header(bearer.clone())
+            .dispatch()
+            .await;
+        assert_eq!(res.status(), Status::NotFound, "{resource} edit missing id");
+        let v: serde_json::Value = res.into_json().await.unwrap();
+        assert_eq!(v["status"], serde_json::json!(false), "{resource} envelope");
+    }
+}

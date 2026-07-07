@@ -34,3 +34,9 @@ cargo clippy --all-targets --all-features -- -D warnings
 ```
 
 > E2E (browser) is run locally — slow/flaky in CI, so it is non-blocking there.
+
+## Manual / Postman
+
+Import [`docs/postman/RustAdmin.postman_collection.json`](postman/RustAdmin.postman_collection.json),
+set `base_url` (default `http://localhost:3000`, i.e. `APP_PORT`), run **Auth → login** to capture
+`access_token`, then drive the Access CRUD and E2E scenario folders against a running server.

@@ -53,3 +53,12 @@ REST-style paths (`GET /:id`, `PUT /:id`, …) intentionally **404**.
 Every access endpoint is RBAC-gated by `(route-name, method)`. Administrator bypasses. The
 permission set is auto-synced from the route registry (open the Permission page, or call the
 permission index).
+
+> A missing `<id>` on `edit`/`update`/`delete` returns **404** (canonical error envelope), never
+> `200` with an empty body.
+
+## Postman
+
+Import [`docs/postman/RustAdmin.postman_collection.json`](postman/RustAdmin.postman_collection.json).
+Set the `base_url` collection variable (default `http://localhost:3000`, i.e. `APP_PORT`), run
+**Auth → login** to capture `access_token`, then exercise the Access and E2E scenario folders.

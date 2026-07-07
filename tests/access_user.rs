@@ -207,3 +207,19 @@ async fn api_requires_auth() {
     let res = client.get("/api/v1/access/user").dispatch().await;
     assert_eq!(res.status(), Status::Unauthorized);
 }
+
+// Parity with the NodeAdmin fix: `edit` on a missing id must 404 (canonical envelope),
+// never 200 with an empty body.
+#[tokio::test]
+async fn api_edit_missing_id_returns_404() {
+    let (client, _db, _admin, _role) = setup().await;
+    let token = login(&client).await;
+    let res = client
+        .get("/api/v1/access/user/00000000-0000-0000-0000-000000000000/edit")
+        .header(bearer(&token))
+        .dispatch()
+        .await;
+    assert_eq!(res.status(), Status::NotFound);
+    let v: serde_json::Value = res.into_json().await.unwrap();
+    assert_eq!(v["status"], false);
+}

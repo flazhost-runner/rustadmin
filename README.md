@@ -84,6 +84,7 @@ cargo run --bin migrate <up|down|fresh|refresh|status>
 - [`docs/MODULE_GUIDE.md`](docs/MODULE_GUIDE.md)
 - [`docs/TESTING.md`](docs/TESTING.md)
 - [`docs/API.md`](docs/API.md)
+- [`docs/postman/RustAdmin.postman_collection.json`](docs/postman/RustAdmin.postman_collection.json) — Postman collection (import + set `base_url`, default `http://localhost:3000`)
 - [`docs/UI_COMPONENTS.md`](docs/UI_COMPONENTS.md)
 
 ## Deployment
