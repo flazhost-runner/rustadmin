@@ -3,13 +3,21 @@
 <div class="w-full max-w-5xl tw-card overflow-hidden grid md:grid-cols-2">
   <!-- Visual panel -->
   <div class="hidden md:flex sidebar-gradient items-center justify-center p-10">
-    <img class="max-w-full max-h-80 object-contain" src="{{ get_file(path="/modules/setting/login-image.png") | safe }}" alt="">
+    {% set login_image_path = setting.login_image | default(value="/modules/setting/login-image.png") %}
+    {% if login_image_path %}
+      <img class="max-w-full max-h-80 object-contain" src="{{ get_file(path=login_image_path) | safe }}" alt="">
+    {% endif %}
   </div>
 
   <!-- Form panel -->
   <div class="p-8 md:p-12 flex flex-col justify-center">
     <div class="mb-8 text-center">
-      <img class="h-14 mx-auto object-contain" src="{{ get_file(path=setting.logo) | safe }}" alt="logo">
+      {% set logo_path = setting.logo | default(value="") %}
+      {% if logo_path %}
+        <img class="h-14 mx-auto object-contain" src="{{ get_file(path=logo_path) | safe }}" alt="logo">
+      {% else %}
+        <span class="text-2xl font-bold" style="color:var(--primary)">{{ setting.name | default(value="RustAdmin") }}</span>
+      {% endif %}
     </div>
 
     {% if flash.message %}

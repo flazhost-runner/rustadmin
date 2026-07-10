@@ -35,7 +35,7 @@ impl MigrationTrait for Migration {
                     )
                     .col(
                         ColumnDef::new(Alias::new("email_verified_at"))
-                            .timestamp()
+                            .date_time()
                             .null(),
                     )
                     .col(ColumnDef::new(Alias::new("password")).string().not_null())
@@ -77,13 +77,13 @@ impl MigrationTrait for Migration {
                     )
                     .col(
                         ColumnDef::new(Alias::new("created_at"))
-                            .timestamp()
+                            .date_time()
                             .not_null()
                             .default(Expr::current_timestamp()),
                     )
                     .col(
                         ColumnDef::new(Alias::new("updated_at"))
-                            .timestamp()
+                            .date_time()
                             .not_null()
                             .default(Expr::current_timestamp()),
                     )

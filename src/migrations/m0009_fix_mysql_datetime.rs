@@ -1,7 +1,14 @@
-//! MySQL-only: convert the audit `TIMESTAMP` columns to `DATETIME`.
+//! MySQL-only SAFETY-NET: converts any lingering audit `TIMESTAMP` columns to
+//! `DATETIME`. Idempotent — safe to re-run.
 //!
-//! The create-migrations declared `created_at`/`updated_at`/`email_verified_at`
-//! with `.timestamp()`, which on MySQL yields `TIMESTAMP`. The entities type
+//! The create-migrations (m0001/m0002/m0003/m0006) now declare
+//! `created_at`/`updated_at`/`email_verified_at` with `.date_time()`, so FRESH
+//! MySQL databases already get `DATETIME` and this migration is a no-op MODIFY
+//! (re-asserting the same type). It only does real work on LEGACY databases
+//! that were migrated back when those columns used `.timestamp()` (→ `TIMESTAMP`).
+//!
+//! Historical context — the original bug: `.timestamp()` on MySQL yields
+//! `TIMESTAMP`. The entities type
 //! these as `DateTime` (`chrono::NaiveDateTime`), and sqlx-mysql maps
 //! `NaiveDateTime` to `DATETIME` only — a `TIMESTAMP` column requires
 //! `DateTime<Utc>`. So every read fails with:
