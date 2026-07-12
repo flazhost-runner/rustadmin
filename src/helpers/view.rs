@@ -53,11 +53,15 @@ fn route_fn(args: &HashMap<String, TeraValue>) -> tera::Result<TeraValue> {
     Ok(TeraValue::String(path))
 }
 
-/// Tera function `get_file(path=...)` → resolved asset URL (identity for now; storage/OSS
-/// mapping plugs in here later). Returns empty string for null/missing.
+/// Tera function `get_file(path=...)` → driver-aware public URL for a stored object key.
+/// Routes through [`crate::config::storage::object_url`]: local → `/storage/<key>`, oss/s3 →
+/// absolute presigned URL. Returns empty string for null/missing/empty so `<img src>` stays blank.
 fn get_file_fn(args: &HashMap<String, TeraValue>) -> tera::Result<TeraValue> {
     let path = args.get("path").and_then(|v| v.as_str()).unwrap_or("");
-    Ok(TeraValue::String(path.to_string()))
+    if path.is_empty() {
+        return Ok(TeraValue::String(String::new()));
+    }
+    Ok(TeraValue::String(crate::config::storage::object_url(path)))
 }
 
 /// Register RustAdmin's Tera globals. Shared by the live engine and tests.

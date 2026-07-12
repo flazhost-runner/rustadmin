@@ -120,7 +120,12 @@ fn assemble(cfg: Config, db: Option<DatabaseConnection>) -> Rocket<Build> {
         .merge((
             "template_dir",
             config::asset("templates").to_string_lossy().to_string(),
-        ));
+        ))
+        // Raise multipart/file upload limits so 2 MB images (profile picture, media library)
+        // aren't silently truncated by Rocket's 1 MiB default `file` limit. Matches the fleet
+        // 2 MB upload standard; `data-form` covers the whole multipart body (fields + file).
+        .merge(("limits.file", "2 MiB"))
+        .merge(("limits.data-form", "3 MiB"));
 
     // DI container ≈ Rocket managed state. Services are shared as trait objects.
     let token_store: Arc<dyn TokenStore> = Arc::new(InMemoryTokenStore::new());

@@ -17,6 +17,8 @@ pub struct ProfileInput {
     pub status: Option<String>,
     /// Empty/None = keep existing password.
     pub password: Option<String>,
+    /// Storage key of a newly-uploaded avatar (e.g. `user/<id>.png`); None = keep existing.
+    pub picture: Option<String>,
 }
 
 #[async_trait]
@@ -63,6 +65,9 @@ impl IProfileService for ProfileService {
         }
         if let Some(pw) = input.password.filter(|p| !p.is_empty()) {
             am.password = Set(bcrypt::hash(&pw, 10)?);
+        }
+        if let Some(picture) = input.picture.filter(|p| !p.trim().is_empty()) {
+            am.picture = Set(Some(picture));
         }
         am.update(db).await?;
         Ok(())
